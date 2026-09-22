@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferencias de Vestimenta y Moda</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="contenedor">
+    <aside class="menu"> 
+       <div class="logo">
+        <div class="icono-logo">
+
+        </div>
+        <h1>Análisis
+            <span>de Datos de Moda</span>
+        </h1>
+       </div>
+        <nav>
+            <a href="prueba1.html" class="activo">INICIO</a>
+            <a href="explorador.html">Explorador de Datos</a>
+            <a href="preferencias.html">Preferencias de compra</a>
+            <a href="sostenible.html">Moda sostenible</a>
+            <a href="economico.html">Análisis económico</a>
+            <a href="marcas.html">Marcas</a>
+            <a href="estadistica.html">Estadística</a>
+            <a href="hallazgos.html">Hallazgos</a>
+        </nav>
+        <div class="menu-final">
+            <p>Moda consciente</p>
+            <small>Decisiones basadas en datos</small>
+        </div>
+    </aside>
+    
+    <main class="Contenido">
+        <header class="encabezado">
+            <h2>Resumen General</h2>
+            <div class="filtros">
+               <div class="filtro">
+                <label>Carrera: </label>
+                <select id="filtroCarrera">
+                    <option value="Todas">Todas las Carreras</option>
+                </select>    
+               </div>
+               <div class="filtro">
+                <label>Edad: </label>
+                <select id="filtroEdad">
+                    <option value="Todas">Todas las edades</option>
+                </select>
+               </div>
+               <div class="filtro">
+                <label>Género: </label>
+                <select id="filtroGenero">
+                    <option value="Todos">Todos los Géneros</option>
+                </select>
+               </div>
+            
+               <button id="limpiarFiltros">Limpiar Filtros</button>
+            </div>    
+        </header>
+
+    <section class="tarjetas">
+      <div class="tarjeta">
+        <div class="icono tarjeta-azul">
+
+        </div>
+        <div>
+            <span>Encuestados</span>
+            <strong id="totalEncuestados">0</strong>
+        </div> 
+      </div>
+
+      <div class="tarjeta">
+        <div class="icono tarjeta-verde">
+
+        </div>
+        <div>
+            <span>Moda Sostenible</span>
+            <strong id="porcentajeSostenible">0%</strong>
+        </div> 
+      </div>
+
+      <div class="tarjeta">
+        <div class="icono tarjeta-morado">
+
+        </div>
+        <div>
+            <span>Diseño y Estilo</span>
+            <strong id="porcentajeDiseno">0%</strong>
+        </div>
+      </div> 
+
+      <div class="tarjeta">
+        <div class="icono tarjeta-dorado">
+            
+        </div>
+        <div>
+            <span>5% - 10% de su presupuesto a ropa</span>
+            <strong id="porcentajePresupuesto">0%</strong>
+        </div> 
+      </div>
+    </section>
+
+    <section class="paneles">
+      <div class="panel">
+       <div class="titulo-panel">
+        <h3>Tipo de ropa comprada más</h3>
+        <span id="respuestasTipo">0 respuestas</span>
+       </div> 
+       <div class="grafica-dona">
+        <div class="dona" id="donaTipoRopa">
+            <div class="centro-dona">
+                <strong id="totalDona">0</strong>
+                <span>Total</span>
+            </div>
+        </div>
+        <div class="leyenda">
+           <div>
+            <span class="punto verde"></span>
+            <p>Moda sostenible</p>
+            <strong id="datoSostenible">0%</strong>
+           </div> 
+           <div>
+            <span class="punto azul"></span>
+            <p>No me fijo en eso</p>  
+            <strong id="datoNofijo">0%</strong>
+           </div>
+           <div>
+            <span class="punto rojo"></span>
+            <p>Moda rápida</p>
+            <strong id="datoRapida">0%</strong>
+           </div>
+        </div> 
+       </div>
+      </div>
+     
+     <div class="panel">
+        <div class="titulo-panel">
+            <h3>Criterio Principal al comprar</h3>
+            <span id="respuestasCriterio">Resultado de la encuesta</span>
+        </div>
+
+        <div class="barras">
+            <div class="barra-item">
+                <div class="barra-texto">
+                    <span>Buena calidad</span>
+                    <strong id="datoCalidad">0%</strong>
+                </div>
+               <div class="barra-fondo">
+                <div id="barraCalidad" class="barra-valor calidad" style="width: 0%;"></div>
+               </div> 
+            </div>
+
+            <div class="barra-item">
+                <div class="barra-texto">
+                    <span>Diseño y Estilo</span>
+                    <strong id="datoDiseno">0%</strong>
+                </div>
+               <div class="barra-fondo">
+                <div id="barraDiseno" class="barra-valor diseño" style="width: 0%;"></div>
+               </div> 
+            </div>
+
+            <div class="barra-item">
+                <div class="barra-texto">
+                    <span>Precio bajo</span>
+                    <strong id="datoPrecio">0%</strong>
+                </div>
+
+                <div class="barra-fondo">
+                    <div id="barraPrecio" class="barra-valor precio" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+     </div> 
+    </section> 
+
+    <section class="paneles">
+        <div class="panel">
+            <div class="titulo-panel">
+                <h3>Número de prendas compradas al mes</h3>
+            </div>
+            <div class="lista-datos">
+                <div>
+                    <span>Ninguna</span>
+                    <strong id="prendasNinguna">0%</strong>
+                </div>
+                <div>
+                    <span>1 - 2 prendas</span>
+                    <strong id="prendas12">0%</strong>
+                </div>
+                <div>
+                    <span>3 - 5 prendas</span>
+                    <strong id="prendas35">0%</strong>
+                </div>
+                <div>
+                    <span>6 - 8 prendas</span>
+                    <strong id="prendas68">0%</strong>
+                </div>
+                <div>
+                    <span>Más de 9</span>
+                    <strong id="prendas9">0%</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="titulo-panel">
+                <h3>Marcas más preferidas</h3>
+            </div>
+            <div class="lista-datos">
+                <div>
+                    <span>Adidas</span>
+                    <strong id="marcaAdidas">0%</strong>
+                </div>
+                <div>
+                    <span>Puma</span>
+                    <strong id="marcaPuma">0%</strong>
+                </div>
+                <div>
+                    <span>Nike</span>
+                    <strong id="marcaNike">0%</strong>
+                </div>
+                <div>
+                    <span>Zara</span>
+                    <strong id="marcaZara">0%</strong>
+                </div>
+                <div>
+                    <span>H&M</span>
+                    <strong id="marcaHM">0%</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="informacion">
+        <div>
+            <h3>Sobre el análisis</h3>
+            <p>Este panel presenta los resultados de la encuesta sobre preferencias de vestimenta, consumo y marcas de moda realizada a estudiantes de la Facultad de Negocios.</p>
+        </div>
+        <div>
+            <h3>Fuente de datos</h3>
+            <p>Registros analizados:
+                <strong id="registrosAnalizados">0</strong>
+            </p>
+        </div>
+    </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="excel.js"></script>
+</body>
+</html>

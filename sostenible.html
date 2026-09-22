@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moda sostenible</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dona-fila { display: flex; align-items: center; gap: 25px; }
+        .leyenda { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .leyenda li { display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: #546e7a; }
+        .leyenda li span:first-child { display: flex; align-items: center; gap: 8px; }
+        .punto { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+        .leyenda li strong { color: #263238; }
+        .indice { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 210px; text-align: center; }
+        .indice .centro-dona strong { font-size: 28px; color: #2e7d32; }
+        .indice p { font-weight: bold; color: #37474f; margin: 0; }
+        .indice small { color: #90a4ae; }
+        .dato-card { padding: 16px 18px; border-radius: 10px; background: #e8f5e9; border-left: 5px solid #4caf50; }
+        .dato-card.ambar { background: #fff8e1; border-color: #ffb300; margin-top: 14px; }
+        .dato-card p { margin: 0; color: #455a64; font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <aside class="menu">
+            <div class="logo">
+                <div class="icono-logo"></div>
+                <h1>Análisis
+                    <span>de Datos de Moda</span>
+                </h1>
+            </div>
+
+            <nav>
+                <a href="prueba1.html">INICIO</a>
+                <a href="explorador.html">Explorador de Datos</a>
+                <a href="preferencias.html">Preferencias de compra</a>
+                <a href="sostenible.html" class="activo">Moda sostenible</a>
+                <a href="economico.html">Análisis económico</a>
+                <a href="marcas.html">Marcas</a>
+                <a href="estadistica.html">Estadística</a>
+                <a href="hallazgos.html">Hallazgos</a>
+            </nav>
+
+            <div class="menu-final">
+                <p>Moda consciente</p>
+                <small>Decisiones basadas en datos</small>
+            </div>
+        </aside>
+
+        <main class="Contenido">
+            <header class="encabezado">
+                <div>
+                    <h2>Moda sostenible</h2>
+                    <p>Análisis de la preferencia y del comportamiento responsable.</p>
+                </div>
+
+                <div class="filtros">
+                    <div class="filtro">
+                        <label>Carrera:</label>
+                        <select id="filtroCarrera">
+                            <option value="Todas">Todas las Carreras</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Edad:</label>
+                        <select id="filtroEdad">
+                            <option value="Todas">Todas las edades</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Género:</label>
+                        <select id="filtroGenero">
+                            <option value="Todos">Todos los Géneros</option>
+                        </select>
+                    </div>
+
+                    <button id="limpiarFiltros">Limpiar Filtros</button>
+                </div>
+            </header>
+
+            <section class="paneles">
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>¿Qué tipo de ropa compras más?</h3>
+                        <span id="totalTipoTexto">0 respuestas</span>
+                    </div>
+                    <div class="dona-fila">
+                        <div class="dona" id="donaTipo">
+                            <div class="centro-dona">
+                                <strong id="totalTipo">0</strong>
+                            </div>
+                        </div>
+                        <ul class="leyenda" id="leyendaTipo"></ul>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Índice de comportamiento sostenible</h3>
+                    </div>
+                    <div class="indice">
+                        <div class="dona" id="donaIndice">
+                            <div class="centro-dona">
+                                <strong id="indiceValor">0%</strong>
+                            </div>
+                        </div>
+                        <p id="indiceNivel">Nivel de compromiso</p>
+                        <small>% que dona, regala, vende o recicla la ropa que ya no usa</small>
+                    </div>
+                </div>
+            </section>
+
+            <section class="paneles">
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>¿Qué haces con la ropa que ya no usas?</h3>
+                    </div>
+                    <div class="dona-fila">
+                        <div class="dona" id="donaDestino">
+                            <div class="centro-dona">
+                                <strong id="totalDestino">0</strong>
+                            </div>
+                        </div>
+                        <ul class="leyenda" id="leyendaDestino"></ul>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Dato relevante</h3>
+                    </div>
+                    <div class="dato-card">
+                        <p id="datoRelevante"></p>
+                    </div>
+                    <div class="dato-card ambar">
+                        <p id="datoBrecha"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="excel.js"></script>
+    <script>
+        let ultimaLongitud = -1;
+
+        setInterval(function () {
+            if (typeof datosFiltrados === "undefined") return;
+            if (datosFiltrados.length === ultimaLongitud) return;
+            ultimaLongitud = datosFiltrados.length;
+            actualizarSostenible(datosFiltrados);
+        }, 300);
+
+        function actualizarSostenible(datos) {
+            const total = datos.length;
+
+            actualizarTexto("totalTipoTexto", total + " respuestas");
+            actualizarTexto("totalTipo", total);
+            actualizarTexto("totalDestino", total);
+
+            const sostenible = calcularPorcentaje(datos, columnas.tipoRopa, ["Moda sostenible"]);
+            const rapida = calcularPorcentaje(datos, columnas.tipoRopa, ["Moda rapida"]);
+            const noFijo = calcularPorcentaje(datos, columnas.tipoRopa, ["No me fijo"]);
+
+            pintarDona("donaTipo", [
+                { color: "#4caf50", etiqueta: "Moda sostenible", pct: sostenible },
+                { color: "#2196f3", etiqueta: "No me fijo en eso", pct: noFijo },
+                { color: "#f44336", etiqueta: "Moda rápida", pct: rapida }
+            ]);
+
+            const basura = calcularPorcentaje(datos, columnas.ropaNoUsa, ["basura"]);
+            const dono = calcularPorcentaje(datos, columnas.ropaNoUsa, ["dono", "regalo"]);
+            const vendo = calcularPorcentaje(datos, columnas.ropaNoUsa, ["vendo", "reciclo", "reciclaje"]);
+
+            pintarDona("donaDestino", [
+                { color: "#f44336", etiqueta: "La tiro a la basura", pct: basura },
+                { color: "#4caf50", etiqueta: "La dono o la regalo", pct: dono },
+                { color: "#9c27b0", etiqueta: "La vendo o reciclo", pct: vendo }
+            ]);
+
+            const indice = redondear(dono + vendo);
+
+            const donaIndice = document.getElementById("donaIndice");
+            if (donaIndice) {
+                donaIndice.style.background = total
+                    ? `conic-gradient(#4caf50 0% ${indice}%, #eceff1 ${indice}% 100%)`
+                    : "#eceff1";
+            }
+
+            actualizarTexto("indiceValor", indice + "%");
+            actualizarTexto(
+                "indiceNivel",
+                indice >= 60 ? "Nivel alto de compromiso" : indice >= 40 ? "Nivel medio de compromiso" : "Nivel bajo de compromiso"
+            );
+
+            actualizarTexto(
+                "datoRelevante",
+                `${indice}% de los encuestados declara donar, regalar, vender o reciclar la ropa que ya no utiliza, mientras que el ${basura}% la tira a la basura.`
+            );
+
+            const sostenibles = datos.filter(fila => normalizar(fila[columnas.tipoRopa]).includes("moda sostenible"));
+            const sostenTiranBasura = sostenibles.filter(fila => normalizar(fila[columnas.ropaNoUsa]).includes("basura"));
+            const brecha = sostenibles.length ? redondear(sostenTiranBasura.length / sostenibles.length * 100) : 0;
+
+            actualizarTexto(
+                "datoBrecha",
+                `Entre quienes dicen preferir moda sostenible (${sostenibles.length} personas), el ${brecha}% igualmente tira su ropa a la basura: existe una brecha entre lo que se dice y lo que se hace.`
+            );
+        }
+
+        function pintarDona(idDona, categorias) {
+            const dona = document.getElementById(idDona);
+            const idLeyenda = idDona.replace("dona", "leyenda");
+            const leyenda = document.getElementById(idLeyenda);
+
+            if (!dona) return;
+
+            const total = categorias.reduce((suma, c) => suma + c.pct, 0);
+
+            if (!total) {
+                dona.style.background = "#eceff1";
+            } else {
+                let acumulado = 0;
+                const tramos = categorias.map(c => {
+                    const inicio = acumulado;
+                    acumulado = redondear(acumulado + c.pct);
+                    return `${c.color} ${inicio}% ${acumulado}%`;
+                });
+                dona.style.background = `conic-gradient(${tramos.join(", ")})`;
+            }
+
+            if (leyenda) {
+                leyenda.innerHTML = categorias.map(c =>
+                    `<li><span><span class="punto" style="background:${c.color}"></span>${c.etiqueta}</span><strong>${c.pct}%</strong></li>`
+                ).join("");
+            }
+        }
+    </script>
+</body>
+</html>

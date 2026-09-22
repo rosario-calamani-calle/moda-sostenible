@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadística</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .tabs { display: flex; gap: 6px; flex-wrap: wrap; background: white; padding: 8px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+        .tab { border: none; background: transparent; padding: 10px 16px; border-radius: 8px; cursor: pointer; color: #546e7a; font-weight: bold; font-size: 14px; }
+        .tab:hover { background: #eceff1; }
+        .tab.activa { background: #4caf50; color: white; }
+        .tab-panel { display: none; }
+        .tab-panel.activa { display: block; }
+        .tabla-simple { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .tabla-simple th { background: #263238; color: white; padding: 10px 12px; text-align: left; }
+        .tabla-simple td { padding: 9px 12px; border-bottom: 1px solid #eceff1; color: #455a64; }
+        .tabla-simple tbody tr:nth-child(even) { background: #fafafa; }
+        .controles { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+        .controles label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: #607d8b; font-weight: bold; }
+        .controles select, .controles input { padding: 9px 12px; border: 1px solid #d0d7dc; border-radius: 7px; background: white; color: #37474f; font-size: 13px; }
+        .controles input[type="number"] { width: 90px; }
+        .barras-v { display: flex; align-items: flex-end; gap: 14px; height: 190px; padding-top: 12px; }
+        .barra-v-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+        .barra-v-relleno { width: 100%; border-radius: 6px 6px 0 0; background: #9c27b0; }
+        .barra-v-valor { font-size: 12px; font-weight: bold; color: #263238; margin-bottom: 4px; }
+        .barra-v-nombre { font-size: 11px; color: #78909c; margin-top: 8px; text-align: center; }
+        .prob-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 10px; background: #f5f9ff; margin-bottom: 12px; }
+        .prob-item span { color: #546e7a; font-size: 14px; }
+        .prob-item strong { font-size: 22px; color: #1976d2; }
+        .pasos { padding-left: 20px; line-height: 1.75; color: #455a64; font-size: 14px; }
+        .pasos li { margin-bottom: 8px; }
+        .resultado { background: #e8f5e9; border-left: 5px solid #4caf50; padding: 14px 16px; border-radius: 8px; color: #2e7d32; font-size: 14px; margin-top: 14px; }
+        .resultado.rechaza { background: #ffebee; border-color: #f44336; color: #c62828; }
+        .lista-datos { display: flex; flex-direction: column; gap: 15px; }
+        .lista-datos > div { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #eceff1; }
+        .lista-datos > div:last-child { border-bottom: none; }
+        .lista-datos span { color: #546e7a; font-size: 14px; }
+        .lista-datos strong { color: #263238; font-size: 14px; }
+        .nota { font-size: 13px; color: #607d8b; line-height: 1.6; margin-top: 12px; }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <aside class="menu">
+            <div class="logo">
+                <div class="icono-logo"></div>
+                <h1>Análisis
+                    <span>de Datos de Moda</span>
+                </h1>
+            </div>
+
+            <nav>
+                <a href="prueba1.html">INICIO</a>
+                <a href="explorador.html">Explorador de Datos</a>
+                <a href="preferencias.html">Preferencias de compra</a>
+                <a href="sostenible.html">Moda sostenible</a>
+                <a href="economico.html">Análisis económico</a>
+                <a href="marcas.html">Marcas</a>
+                <a href="estadistica.html" class="activo">Estadística</a>
+                <a href="hallazgos.html">Hallazgos</a>
+            </nav>
+
+            <div class="menu-final">
+                <p>Moda consciente</p>
+                <small>Decisiones basadas en datos</small>
+            </div>
+        </aside>
+
+        <main class="Contenido">
+            <header class="encabezado">
+                <div>
+                    <h2>Módulo estadístico</h2>
+                    <p>Cálculos y pruebas aplicados a los datos de la encuesta.</p>
+                </div>
+
+                <div class="filtros">
+                    <div class="filtro">
+                        <label>Carrera:</label>
+                        <select id="filtroCarrera">
+                            <option value="Todas">Todas las Carreras</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Edad:</label>
+                        <select id="filtroEdad">
+                            <option value="Todas">Todas las edades</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Género:</label>
+                        <select id="filtroGenero">
+                            <option value="Todos">Todos los Géneros</option>
+                        </select>
+                    </div>
+
+                    <button id="limpiarFiltros">Limpiar Filtros</button>
+                </div>
+            </header>
+
+            <div class="tabs">
+                <button class="tab activa" data-tab="tabDesc">Descriptiva</button>
+                <button class="tab" data-tab="tabProb">Probabilidad</button>
+                <button class="tab" data-tab="tabDist">Distribuciones</button>
+                <button class="tab" data-tab="tabInf">Inferencia</button>
+            </div>
+
+            <div class="tab-panel activa" id="tabDesc">
+                <section class="paneles">
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Estadística descriptiva</h3></div>
+                        <div id="descTabla"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Distribución (Nº de prendas al mes)</h3></div>
+                        <div class="barras-v" id="barrasHist"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-panel" id="tabProb">
+                <section class="paneles">
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Probabilidad de marcas preferidas</h3></div>
+                        <div id="probTabla"></div>
+                        <p class="nota" id="probTexto"></p>
+                    </div>
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Probabilidad conjunta</h3></div>
+                        <div class="controles">
+                            <label>Tipo de ropa (X)
+                                <select id="selProbX"></select>
+                            </label>
+                            <label>Género (Y)
+                                <select id="selProbY"></select>
+                            </label>
+                        </div>
+                        <div id="probCruzTabla"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-panel" id="tabDist">
+                <section class="paneles">
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Distribución Binomial</h3></div>
+                        <div class="controles">
+                            <label>Marca (éxito)
+                                <select id="binMarca"></select>
+                            </label>
+                            <label>n (personas)
+                                <input type="number" id="binN" value="10" min="1" max="60">
+                            </label>
+                            <label>k (éxitos)
+                                <input type="number" id="binK" value="3" min="0" max="60">
+                            </label>
+                        </div>
+                        <div id="binResultado"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>P(X = k)</h3></div>
+                        <div class="barras-v" id="barrasBinom" style="height:220px"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-panel" id="tabInf">
+                <section class="paneles">
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Prueba de hipótesis (media)</h3></div>
+                        <div class="controles">
+                            <label>μ₀
+                                <input type="number" id="hipMu0" value="3" step="any">
+                            </label>
+                            <label>Significancia
+                                <select id="hipAlfa">
+                                    <option value="0.10">α = 0.10</option>
+                                    <option value="0.05" selected>α = 0.05</option>
+                                    <option value="0.01">α = 0.01</option>
+                                </select>
+                            </label>
+                        </div>
+                        <p class="nota">Variable: Nº de prendas compradas al mes. H₀: μ ≤ μ₀ &nbsp;|&nbsp; H₁: μ &gt; μ₀</p>
+                        <div id="hipResultado"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Intervalo de confianza (95 %)</h3></div>
+                        <div class="lista-datos" id="icTabla"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="excel.js"></script>
+    <script>
+        let ultimaLongitud = -1;
+        let listasListas = false;
+        const MARCAS = ["Adidas", "Puma", "Nike", "Zara", "H&M", "Levi's"];
+
+        document.querySelectorAll(".tab").forEach(boton => boton.addEventListener("click", () => {
+            document.querySelectorAll(".tab").forEach(b => b.classList.toggle("activa", b === boton));
+            document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("activa", p.id === boton.dataset.tab));
+        }));
+
+        setInterval(function () {
+            if (typeof datosFiltrados === "undefined") return;
+            if (!listasListas && datosFiltrados.length) {
+                poblarListas();
+                listasListas = true;
+            }
+            if (datosFiltrados.length === ultimaLongitud) return;
+            ultimaLongitud = datosFiltrados.length;
+            actualizarTodo(datosFiltrados);
+        }, 300);
+
+        function poblarListas() {
+            const binMarca = document.getElementById("binMarca");
+            MARCAS.forEach(m => {
+                const op = document.createElement("option");
+                op.value = m; op.textContent = m;
+                binMarca.appendChild(op);
+            });
+            binMarca.value = "Adidas";
+
+            const selX = document.getElementById("selProbX");
+            ["Moda sostenible", "Moda rapida", "No me fijo"].forEach((v, i) => {
+                const op = document.createElement("option");
+                op.value = v; op.textContent = ["Moda sostenible", "Moda rápida", "No me fijo en eso"][i];
+                selX.appendChild(op);
+            });
+
+            const selY = document.getElementById("selProbY");
+            ["Femenino", "Masculino"].forEach(v => {
+                const op = document.createElement("option");
+                op.value = v; op.textContent = v;
+                selY.appendChild(op);
+            });
+
+            ["binMarca", "binN", "binK", "selProbX", "selProbY", "hipMu0", "hipAlfa"].forEach(id => {
+                document.getElementById(id).addEventListener("input", () => actualizarTodo(datosFiltrados));
+                document.getElementById(id).addEventListener("change", () => actualizarTodo(datosFiltrados));
+            });
+        }
+
+        function numDe(texto, abierto) {
+            const t = normalizar(texto);
+            if (!t) return NaN;
+            if (t.includes("ninguna") || t.includes("nunca")) return 0;
+            const nums = (t.match(/\d+/g) || []).map(Number);
+            if (!nums.length) return NaN;
+            if (t.includes("menos")) return nums[0] / 2;
+            if (t.includes("mas de") || t.includes("mas del")) return abierto;
+            if (nums.length >= 2) return (nums[0] + nums[1]) / 2;
+            return nums[0];
+        }
+
+        function media(a) { return a.reduce((s, v) => s + v, 0) / a.length; }
+        function desv(a) { const m = media(a); return Math.sqrt(a.reduce((s, v) => s + (v - m) ** 2, 0) / (a.length - 1)); }
+        function mediana(a) {
+            const s = [...a].sort((x, y) => x - y), n = s.length;
+            return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
+        }
+        function moda(a) {
+            const cont = new Map();
+            a.forEach(v => cont.set(v, (cont.get(v) || 0) + 1));
+            let mejor = NaN, max = 0;
+            cont.forEach((n, v) => { if (n > max) { max = n; mejor = v; } });
+            return mejor;
+        }
+
+        function tabla(encabezados, filas) {
+            return `<table class="tabla-simple"><thead><tr>${encabezados.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+                <tbody>${filas.map(f => `<tr>${f.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+        }
+
+        function pintarBarrasV(idContenedor, categorias, color) {
+            const cont = document.getElementById(idContenedor);
+            if (!cont) return;
+            const max = Math.max(...categorias.map(c => c.valor), 1);
+            cont.innerHTML = categorias.map(c => `
+                <div class="barra-v-col">
+                    <span class="barra-v-valor">${c.texto}</span>
+                    <div class="barra-v-relleno" style="height:${c.valor / max * 100}%;background:${c.color || color}"></div>
+                    <span class="barra-v-nombre">${c.etiqueta}</span>
+                </div>`).join("");
+        }
+
+        function gammaln(x) {
+            const C = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+            if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - gammaln(1 - x);
+            x -= 1;
+            let a = C[0];
+            const t = x + 7.5;
+            for (let i = 1; i < 9; i++) a += C[i] / (x + i);
+            return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+        }
+
+        function dbinom(k, n, p) {
+            if (k < 0 || k > n) return 0;
+            return Math.exp(gammaln(n + 1) - gammaln(k + 1) - gammaln(n - k + 1) + k * Math.log(p) + (n - k) * Math.log(1 - p));
+        }
+
+        function pnormDer(z) {
+            const t = 1 / (1 + 0.2316419 * Math.abs(z));
+            const d = 0.3989423 * Math.exp(-z * z / 2);
+            let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+            return z >= 0 ? p : 1 - p;
+        }
+
+        function actualizarDescriptiva(datos) {
+            const edad = datos.map(f => numDe(f[columnas.edad], 30.5)).filter(Number.isFinite);
+            const prendas = datos.map(f => numDe(f[columnas.prendas], 10)).filter(Number.isFinite);
+            const presu = datos.map(f => numDe(f[columnas.presupuesto], 25)).filter(Number.isFinite);
+            const precio = datos.map(f => numDe(f[columnas.precio], 950)).filter(Number.isFinite);
+
+            const fila = (nombre, arr) => [nombre, media(arr).toFixed(2), mediana(arr).toFixed(2), moda(arr).toFixed(2), desv(arr).toFixed(2)];
+
+            document.getElementById("descTabla").innerHTML = tabla(
+                ["Variable", "Media", "Mediana", "Moda", "Desv. Est."],
+                [fila("Edad", edad), fila("Nº de prendas", prendas), fila("% presupuesto", presu), fila("Disposición a pagar", precio)]
+            );
+
+            const bins = [
+                { etiqueta: "Ninguna", opciones: ["Ninguna"] },
+                { etiqueta: "1 - 2", opciones: ["De 1 a 2"] },
+                { etiqueta: "3 - 5", opciones: ["De 3 a 5"] },
+                { etiqueta: "6 - 8", opciones: ["De 6 a 8"] },
+                { etiqueta: "Más de 9", opciones: ["Mas de 9"] }
+            ].map(b => {
+                const n = datos.filter(f => normalizar(f[columnas.prendas]).includes(normalizar(b.opciones[0]))).length;
+                return { etiqueta: b.etiqueta, valor: n, texto: n };
+            });
+
+            pintarBarrasV("barrasHist", bins, "#9c27b0");
+        }
+
+        /* Todas las probabilidades de esta pestaña se muestran en % (antes
+           salían como fracción decimal, ej. 0.2583). La frecuencia bruta
+           (n/total) se deja como referencia junto al porcentaje. */
+        function actualizarProbabilidad(datos) {
+            const total = datos.length;
+            const marcas = MARCAS.map(m => ({ m, n: datos.filter(f => normalizar(f[columnas.marcaPreferida]).includes(normalizar(m))).length }));
+
+            document.getElementById("probTabla").innerHTML = tabla(
+                ["Marca", "Frecuencia", "Probabilidad"],
+                marcas.map(x => [x.m, x.n, `${x.n}/${total} = ${(x.n / total * 100).toFixed(2)}%`])
+            );
+
+            const deportivas = ["Adidas", "Puma", "Nike"];
+            const nDep = marcas.filter(x => deportivas.includes(x.m)).reduce((s, x) => s + x.n, 0);
+            const pA = marcas.find(x => x.m === "Adidas").n / total;
+            const pDep = nDep / total;
+
+            document.getElementById("probTexto").textContent =
+                `Si se sabe que un estudiante prefiere una marca deportiva (Adidas, Puma o Nike), la probabilidad de que sea Adidas es P(Adidas | deportiva) = ${(pA / pDep * 100).toFixed(2)}%.`;
+
+            const X = document.getElementById("selProbX").value || "Moda sostenible";
+            const Y = document.getElementById("selProbY").value || "Femenino";
+            const nX = datos.filter(f => normalizar(f[columnas.tipoRopa]).includes(normalizar(X))).length;
+            const nY = datos.filter(f => normalizar(f[columnas.genero]).includes(normalizar(Y))).length;
+            const nXY = datos.filter(f => normalizar(f[columnas.tipoRopa]).includes(normalizar(X)) && normalizar(f[columnas.genero]).includes(normalizar(Y))).length;
+
+            document.getElementById("probCruzTabla").innerHTML = tabla(
+                ["Probabilidad", "Valor"],
+                [[`P(${X})`, (nX / total * 100).toFixed(2) + "%"],
+                [`P(${Y})`, (nY / total * 100).toFixed(2) + "%"],
+                [`P(${X} ∩ ${Y})`, (nXY / total * 100).toFixed(2) + "%"],
+                [`P(${X} | ${Y})`, nY ? (nXY / nY * 100).toFixed(2) + "%" : "—"]]
+            );
+        }
+
+        function actualizarDistribuciones(datos) {
+            const total = datos.length;
+            const marca = document.getElementById("binMarca").value || "Adidas";
+            let n = parseInt(document.getElementById("binN").value) || 10;
+            n = Math.min(Math.max(n, 1), 60);
+            let k = parseInt(document.getElementById("binK").value) || 0;
+            k = Math.min(Math.max(k, 0), n);
+
+            const p = datos.filter(f => normalizar(f[columnas.marcaPreferida]).includes(normalizar(marca))).length / total;
+
+            document.getElementById("binResultado").innerHTML = tabla(
+                ["Elemento", "Valor"],
+                [["Distribución", `X ~ Binomial(n = ${n}, p = ${p.toFixed(4)} &nbsp;→&nbsp; ${(p * 100).toFixed(2)}%)`],
+                ["Media (n·p)", (n * p).toFixed(3)],
+                ["Desviación estándar", Math.sqrt(n * p * (1 - p)).toFixed(3)],
+                [`P(X = ${k})`, `<strong>${(dbinom(k, n, p) * 100).toFixed(2)} %</strong>`]]
+            );
+
+            const ks = Array.from({ length: n + 1 }, (_, i) => i);
+            pintarBarrasV("barrasBinom", ks.map(i => ({
+                etiqueta: i, valor: dbinom(i, n, p), texto: (dbinom(i, n, p) * 100).toFixed(1) + "%",
+                color: i === k ? "#f44336" : "#2196f3"
+            })));
+        }
+
+        function actualizarInferencia(datos) {
+            const prendas = datos.map(f => numDe(f[columnas.prendas], 10)).filter(Number.isFinite);
+            const n = prendas.length, m = media(prendas), s = desv(prendas), se = s / Math.sqrt(n);
+
+            const mu0 = parseFloat(document.getElementById("hipMu0").value) || 3;
+            const alfa = parseFloat(document.getElementById("hipAlfa").value);
+            const z = (m - mu0) / se;
+            const p = pnormDer(z);
+            const rechaza = p < alfa;
+
+            document.getElementById("hipResultado").innerHTML = `
+                <ul class="pasos">
+                    <li>Datos: n = ${n}, x̄ = ${m.toFixed(3)}, s = ${s.toFixed(3)}, error estándar = ${se.toFixed(4)}</li>
+                    <li>Estadístico: Z = (x̄ − μ₀) / (s/√n) = <strong>${z.toFixed(3)}</strong></li>
+                    <li>Valor-p = <strong>${p < 0.001 ? "< 0.001" : p.toFixed(4)}</strong></li>
+                </ul>
+                <div class="resultado ${rechaza ? "rechaza" : ""}">
+                    ${rechaza
+                        ? `El valor-p es menor que α = ${alfa}. Se rechaza H₀: hay evidencia de que el promedio es mayor a ${mu0}.`
+                        : `El valor-p no es menor que α = ${alfa}. No se rechaza H₀: no hay evidencia suficiente de que el promedio sea mayor a ${mu0}.`}
+                </div>`;
+
+            const crit = 1.96;
+            document.getElementById("icTabla").innerHTML = `
+                <div><span>Media muestral</span><strong>${m.toFixed(3)}</strong></div>
+                <div><span>Error estándar</span><strong>${se.toFixed(4)}</strong></div>
+                <div><span>IC 95 % para μ</span><strong>(${(m - crit * se).toFixed(3)} ; ${(m + crit * se).toFixed(3)})</strong></div>`;
+        }
+
+        function actualizarTodo(datos) {
+            if (!datos.length) return;
+            actualizarDescriptiva(datos);
+            actualizarProbabilidad(datos);
+            actualizarDistribuciones(datos);
+            actualizarInferencia(datos);
+        }
+    </script>
+</body>
+</html>

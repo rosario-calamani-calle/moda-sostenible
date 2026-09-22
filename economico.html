@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis económico</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dona-fila { display: flex; align-items: center; gap: 25px; }
+        .leyenda { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .leyenda li { display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: #546e7a; }
+        .leyenda li span:first-child { display: flex; align-items: center; gap: 8px; }
+        .punto { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+        .leyenda li strong { color: #263238; }
+        .barras-v { display: flex; align-items: flex-end; gap: 16px; height: 190px; padding-top: 12px; }
+        .barra-v-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+        .barra-v-relleno { width: 100%; border-radius: 6px 6px 0 0; background: #2196f3; transition: height .3s; }
+        .barra-v-valor { font-size: 12px; font-weight: bold; color: #263238; margin-bottom: 4px; }
+        .barra-v-nombre { font-size: 11px; color: #78909c; margin-top: 8px; text-align: center; line-height: 1.3; }
+        .lista-datos { display: flex; flex-direction: column; gap: 15px; }
+        .lista-datos > div { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #eceff1; }
+        .lista-datos > div:last-child { border-bottom: none; }
+        .lista-datos span { color: #546e7a; font-size: 14px; }
+        .lista-datos strong { color: #263238; font-size: 14px; }
+        .nota { font-size: 13px; color: #607d8b; line-height: 1.6; margin-top: 12px; }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <aside class="menu">
+            <div class="logo">
+                <div class="icono-logo"></div>
+                <h1>Análisis
+                    <span>de Datos de Moda</span>
+                </h1>
+            </div>
+
+            <nav>
+                <a href="prueba1.html">INICIO</a>
+                <a href="explorador.html">Explorador de Datos</a>
+                <a href="preferencias.html">Preferencias de compra</a>
+                <a href="sostenible.html">Moda sostenible</a>
+                <a href="economico.html" class="activo">Análisis económico</a>
+                <a href="marcas.html">Marcas</a>
+                <a href="estadistica.html">Estadística</a>
+                <a href="hallazgos.html">Hallazgos</a>
+            </nav>
+
+            <div class="menu-final">
+                <p>Moda consciente</p>
+                <small>Decisiones basadas en datos</small>
+            </div>
+        </aside>
+
+        <main class="Contenido">
+            <header class="encabezado">
+                <div>
+                    <h2>Análisis económico</h2>
+                    <p>Presupuesto, disposición a pagar y relación con la compra.</p>
+                </div>
+
+                <div class="filtros">
+                    <div class="filtro">
+                        <label>Carrera:</label>
+                        <select id="filtroCarrera">
+                            <option value="Todas">Todas las Carreras</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Edad:</label>
+                        <select id="filtroEdad">
+                            <option value="Todas">Todas las edades</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Género:</label>
+                        <select id="filtroGenero">
+                            <option value="Todos">Todos los Géneros</option>
+                        </select>
+                    </div>
+
+                    <button id="limpiarFiltros">Limpiar Filtros</button>
+                </div>
+            </header>
+
+            <section class="tarjetas">
+                <div class="tarjeta">
+                    <div class="icono tarjeta-verde"></div>
+                    <div>
+                        <span>Gasto mensual estimado (promedio)</span>
+                        <strong id="gastoPromedio">Bs 0</strong>
+                    </div>
+                </div>
+
+                <div class="tarjeta">
+                    <div class="icono tarjeta-dorado"></div>
+                    <div>
+                        <span>Gasto total estimado (muestra)</span>
+                        <strong id="gastoTotalMuestra">Bs 0</strong>
+                    </div>
+                </div>
+            </section>
+            <p class="nota" style="margin: -10px 0 20px;">
+                Estimado a partir de la disposición a pagar por prenda (pregunta 4) × el número de prendas
+                compradas al mes (pregunta 1) de cada encuestado. No proviene de un monto declarado
+                directamente en la encuesta ni modifica los datos originales.
+            </p>
+
+            <section class="paneles">
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Presupuesto destinado a ropa</h3>
+                    </div>
+                    <div class="dona-fila">
+                        <div class="dona" id="donaPresupuesto">
+                            <div class="centro-dona">
+                                <strong id="totalPresupuesto">0</strong>
+                            </div>
+                        </div>
+                        <ul class="leyenda" id="leyendaPresupuesto"></ul>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Disposición a pagar por prenda</h3>
+                        <span>% de encuestados</span>
+                    </div>
+                    <div class="barras-v" id="barrasPrecio"></div>
+                </div>
+            </section>
+
+            <section class="paneles">
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Relación entre presupuesto y número de prendas</h3>
+                        <span>tamaño = nº de personas</span>
+                    </div>
+                    <svg id="svgDispersion" viewBox="0 0 560 320" style="width:100%;height:320px"></svg>
+                </div>
+
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Correlación lineal (Pearson)</h3>
+                    </div>
+                    <div class="lista-datos">
+                        <div><span>Coeficiente de correlación (r)</span><strong id="valorR">0</strong></div>
+                        <div><span>Coeficiente de determinación (r²)</span><strong id="valorR2">0</strong></div>
+                        <div><span>Valor-p</span><strong id="valorP">0</strong></div>
+                    </div>
+                    <p class="nota" id="textoRelacion"></p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="excel.js"></script>
+    <script>
+        let ultimaLongitud = -1;
+
+        setInterval(function () {
+            if (typeof datosFiltrados === "undefined") return;
+            if (datosFiltrados.length === ultimaLongitud) return;
+            ultimaLongitud = datosFiltrados.length;
+            actualizarEconomico(datosFiltrados);
+        }, 300);
+
+        function numDe(texto, abierto) {
+            const t = normalizar(texto);
+            if (!t) return NaN;
+            if (t.includes("ninguna") || t.includes("nunca")) return 0;
+            const nums = (t.match(/\d+/g) || []).map(Number);
+            if (!nums.length) return NaN;
+            if (t.includes("menos")) return nums[0] / 2;
+            if (t.includes("mas de") || t.includes("mas del")) return abierto;
+            if (nums.length >= 2) return (nums[0] + nums[1]) / 2;
+            return nums[0];
+        }
+
+        function pintarDona(idDona, idLeyenda, categorias) {
+            const dona = document.getElementById(idDona);
+            const leyenda = document.getElementById(idLeyenda);
+            if (!dona) return;
+
+            const total = categorias.reduce((s, c) => s + c.pct, 0);
+
+            if (!total) {
+                dona.style.background = "#eceff1";
+            } else {
+                let acumulado = 0;
+                const tramos = categorias.map(c => {
+                    const inicio = acumulado;
+                    acumulado = redondear(acumulado + c.pct);
+                    return `${c.color} ${inicio}% ${acumulado}%`;
+                });
+                dona.style.background = `conic-gradient(${tramos.join(", ")})`;
+            }
+
+            if (leyenda) {
+                leyenda.innerHTML = categorias.map(c =>
+                    `<li><span><span class="punto" style="background:${c.color}"></span>${c.etiqueta}</span><strong>${c.pct}%</strong></li>`
+                ).join("");
+            }
+        }
+
+        function pintarBarrasV(idContenedor, categorias, color) {
+            const cont = document.getElementById(idContenedor);
+            if (!cont) return;
+            const max = Math.max(...categorias.map(c => c.pct), 1);
+            cont.innerHTML = categorias.map(c => `
+                <div class="barra-v-col">
+                    <span class="barra-v-valor">${c.pct}%</span>
+                    <div class="barra-v-relleno" style="height:${(c.pct / max * 100)}%;background:${color}"></div>
+                    <span class="barra-v-nombre">${c.etiqueta}</span>
+                </div>`).join("");
+        }
+
+        function pearson(x, y) {
+            const n = x.length;
+            const mx = x.reduce((a, b) => a + b, 0) / n;
+            const my = y.reduce((a, b) => a + b, 0) / n;
+            let sxy = 0, sxx = 0, syy = 0;
+            for (let i = 0; i < n; i++) {
+                sxy += (x[i] - mx) * (y[i] - my);
+                sxx += (x[i] - mx) ** 2;
+                syy += (y[i] - my) ** 2;
+            }
+            return sxy / Math.sqrt(sxx * syy);
+        }
+
+        function pintarDispersion(idSvg, x, y) {
+            const svg = document.getElementById(idSvg);
+            if (!svg || !x.length) { if (svg) svg.innerHTML = ""; return; }
+
+            const ancho = 560, alto = 320, margen = 42;
+            const minX = 0, maxX = Math.max(...x) * 1.05;
+            const minY = 0, maxY = Math.max(...y) * 1.15;
+
+            const px = v => margen + (v - minX) / (maxX - minX) * (ancho - margen - 15);
+            const py = v => alto - margen - (v - minY) / (maxY - minY) * (alto - margen - 15);
+
+            const conteo = new Map();
+            x.forEach((vx, i) => {
+                const clave = vx + "|" + y[i];
+                conteo.set(clave, { x: vx, y: y[i], n: (conteo.get(clave)?.n || 0) + 1 });
+            });
+
+            const puntos = [...conteo.values()].map(p =>
+                `<circle cx="${px(p.x)}" cy="${py(p.y)}" r="${3 + Math.sqrt(p.n) * 2.2}" fill="rgba(33,150,243,.55)" stroke="#1976d2" stroke-width="1"></circle>`
+            ).join("");
+
+            const r = pearson(x, y);
+            const my = y.reduce((a, b) => a + b, 0) / y.length;
+            const mx = x.reduce((a, b) => a + b, 0) / x.length;
+            const sy = Math.sqrt(y.reduce((a, b) => a + (b - my) ** 2, 0) / (y.length - 1));
+            const sx = Math.sqrt(x.reduce((a, b) => a + (b - mx) ** 2, 0) / (x.length - 1));
+            const b1 = r * sy / sx;
+            const b0 = my - b1 * mx;
+
+            const linea = `<line x1="${px(minX)}" y1="${py(b0)}" x2="${px(maxX)}" y2="${py(b0 + b1 * maxX)}" stroke="#f44336" stroke-width="2.5"></line>`;
+
+            const ejes = `
+                <line x1="${margen}" y1="${alto - margen}" x2="${ancho - 10}" y2="${alto - margen}" stroke="#cfd8dc"></line>
+                <line x1="${margen}" y1="${alto - margen}" x2="${margen}" y2="10" stroke="#cfd8dc"></line>
+                <text x="${ancho / 2}" y="${alto - 8}" text-anchor="middle" font-size="12" fill="#78909c">% del presupuesto destinado a ropa</text>
+                <text x="14" y="${alto / 2}" text-anchor="middle" font-size="12" fill="#78909c" transform="rotate(-90 14 ${alto / 2})">Nº de prendas al mes</text>
+            `;
+
+            svg.innerHTML = ejes + puntos + linea;
+        }
+
+        /* Gasto mensual estimado en Bs = precio medio por prenda (pregunta 4) x
+           número de prendas al mes (pregunta 1). Es un dato calculado, no una
+           columna del Excel: no se modifica datos.xlsx en ningún momento. */
+        function actualizarGastoEstimado(datos) {
+            const gastos = [];
+
+            datos.forEach(fila => {
+                const precioNum = numDe(fila[columnas.precio], 950);
+                const prendasNum = numDe(fila[columnas.prendas], 10);
+
+                if (Number.isFinite(precioNum) && Number.isFinite(prendasNum)) {
+                    gastos.push(precioNum * prendasNum);
+                }
+            });
+
+            if (!gastos.length) {
+                actualizarTexto("gastoPromedio", "Bs 0");
+                actualizarTexto("gastoTotalMuestra", "Bs 0");
+                return;
+            }
+
+            const sumaTotal = gastos.reduce((a, b) => a + b, 0);
+            const promedio = Math.round(sumaTotal / gastos.length);
+
+            actualizarTexto("gastoPromedio", "Bs " + promedio.toLocaleString("es-BO"));
+            actualizarTexto("gastoTotalMuestra", "Bs " + Math.round(sumaTotal).toLocaleString("es-BO"));
+        }
+
+        function actualizarEconomico(datos) {
+            const total = datos.length;
+
+            const menos5 = calcularPorcentaje(datos, columnas.presupuesto, ["Menos del 5"]);
+            const entre5_10 = calcularPorcentaje(datos, columnas.presupuesto, ["Entre el 5"]);
+            const entre11_19 = calcularPorcentaje(datos, columnas.presupuesto, ["Entre el 11"]);
+            const mas20 = calcularPorcentaje(datos, columnas.presupuesto, ["Mas del 20"]);
+
+            actualizarTexto("totalPresupuesto", total);
+            pintarDona("donaPresupuesto", "leyendaPresupuesto", [
+                { color: "#9c27b0", etiqueta: "Menos del 5 %", pct: menos5 },
+                { color: "#4caf50", etiqueta: "5 % - 10 %", pct: entre5_10 },
+                { color: "#2196f3", etiqueta: "11 % - 19 %", pct: entre11_19 },
+                { color: "#f44336", etiqueta: "Más del 20 %", pct: mas20 }
+            ]);
+
+            const menos100 = calcularPorcentaje(datos, columnas.precio, ["Menos de Bs 100"]);
+            const b100_250 = calcularPorcentaje(datos, columnas.precio, ["Bs 100 y Bs 250", "Bs 101 y Bs 250"]);
+            const b251_500 = calcularPorcentaje(datos, columnas.precio, ["Bs 251 y Bs 500"]);
+            const b501_800 = calcularPorcentaje(datos, columnas.precio, ["Bs 501 y Bs 800"]);
+            const mas800 = calcularPorcentaje(datos, columnas.precio, ["Mas de Bs 801", "Mas de Bs 800"]);
+
+            pintarBarrasV("barrasPrecio", [
+                { etiqueta: "< Bs 100", pct: menos100 },
+                { etiqueta: "Bs 100-250", pct: b100_250 },
+                { etiqueta: "Bs 251-500", pct: b251_500 },
+                { etiqueta: "Bs 501-800", pct: b501_800 },
+                { etiqueta: "> Bs 800", pct: mas800 }
+            ], "#2196f3");
+
+            actualizarGastoEstimado(datos);
+
+            const presupuestoNum = [];
+            const prendasNum = [];
+            datos.forEach(fila => {
+                const p = numDe(fila[columnas.presupuesto], 25);
+                const c = numDe(fila[columnas.prendas], 10);
+                if (Number.isFinite(p) && Number.isFinite(c)) { presupuestoNum.push(p); prendasNum.push(c); }
+            });
+
+            pintarDispersion("svgDispersion", presupuestoNum, prendasNum);
+
+            if (presupuestoNum.length > 2) {
+                const r = pearson(presupuestoNum, prendasNum);
+                const r2 = r * r;
+                const n = presupuestoNum.length;
+                const t = r * Math.sqrt((n - 2) / (1 - r2));
+                const gl = n - 2;
+                const p = 2 * (1 - tCdf(Math.abs(t), gl));
+
+                const fuerza = Math.abs(r) < 0.2 ? "muy débil" : Math.abs(r) < 0.4 ? "débil" : Math.abs(r) < 0.6 ? "moderada" : "fuerte";
+                const sentido = r > 0 ? "positiva" : "negativa";
+
+                // r: 4 decimales + dirección y fuerza. r²: 4 decimales convertidos a %
+                // (representa el % de variabilidad de una variable explicado por la otra).
+                actualizarTexto("valorR", `${r.toFixed(4)} (${sentido}, ${fuerza})`);
+                actualizarTexto("valorR2", `${r2.toFixed(4)} → ${(r2 * 100).toFixed(2)}%`);
+                actualizarTexto("valorP", p < 0.001 ? "< 0.001" : p.toFixed(4));
+
+                const texto = p >= 0.05
+                    ? `No se encontró una relación lineal significativa entre el presupuesto destinado a ropa y el número de prendas compradas al mes (r = ${r.toFixed(2)}; valor-p ${p < 0.001 ? "< 0.001" : p.toFixed(4)}).`
+                    : `Existe una relación lineal ${sentido} ${fuerza} entre el presupuesto destinado a ropa y el número de prendas compradas al mes (r = ${r.toFixed(2)}; valor-p ${p < 0.001 ? "< 0.001" : p.toFixed(4)}).`;
+                actualizarTexto("textoRelacion", texto);
+            }
+        }
+
+        function tCdf(t, gl) {
+            const x = gl / (gl + t * t);
+            return 1 - 0.5 * betai(gl / 2, 0.5, x);
+        }
+
+        function betai(a, b, x) {
+            if (x <= 0) return 0;
+            if (x >= 1) return 1;
+            const bt = Math.exp(gammaln(a + b) - gammaln(a) - gammaln(b) + a * Math.log(x) + b * Math.log(1 - x));
+            return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b;
+        }
+
+        function betacf(a, b, x) {
+            const FPMIN = 1e-300;
+            const qab = a + b, qap = a + 1, qam = a - 1;
+            let c = 1, d = 1 - qab * x / qap;
+            if (Math.abs(d) < FPMIN) d = FPMIN;
+            d = 1 / d;
+            let h = d;
+            for (let m = 1; m <= 200; m++) {
+                const m2 = 2 * m;
+                let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+                d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+                c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+                d = 1 / d; h *= d * c;
+                aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+                d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+                c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+                d = 1 / d;
+                const del = d * c;
+                h *= del;
+                if (Math.abs(del - 1) < 3e-9) break;
+            }
+            return h;
+        }
+
+        function gammaln(x) {
+            const C = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+            if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - gammaln(1 - x);
+            x -= 1;
+            let a = C[0];
+            const t = x + 7.5;
+            for (let i = 1; i < 9; i++) a += C[i] / (x + i);
+            return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+        }
+    </script>
+</body>
+</html>

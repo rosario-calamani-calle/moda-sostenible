@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferencias de compra</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="contenedor">
+    <aside class="menu">
+        <div class="logo">
+            <div class="icono-logo"></div>
+            <h1>
+                Análisis
+                <span>de Datos de Moda</span>
+            </h1>
+        </div>
+        <nav>
+            <a href="prueba1.html">INICIO</a>
+            <a href="explorador.html">Explorador de Datos</a>
+            <a href="preferencias.html" class="activo">Preferencias de compra</a>
+            <a href="sostenible.html">Moda sostenible</a>
+            <a href="economico.html">Análisis económico</a>
+            <a href="marcas.html">Marcas</a>
+            <a href="estadistica.html">Estadística</a>
+            <a href="hallazgos.html">Hallazgos</a>
+        </nav>
+
+        <div class="menu-final">
+            <p>Moda consciente</p>
+            <small>Decisiones basadas en datos</small>
+        </div>
+    </aside>
+    <main class="Contenido">
+        <header class="encabezado">
+            <div>
+                <h2>Preferencias de compra</h2>
+                <p>
+                    Análisis de la cantidad de prendas compradas y el
+                    presupuesto destinado a ropa.
+                </p>
+            </div>
+            <div class="filtros">
+                <div class="filtro">
+                    <label>Carrera:</label>
+                    <select id="filtroCarrera">
+                        <option value="Todas">
+                            Todas las Carreras
+                        </option>
+                    </select>
+                </div>
+                <div class="filtro">
+                    <label>Edad:</label>
+                    <select id="filtroEdad">
+                        <option value="Todas">
+                            Todas las edades
+                        </option>
+                    </select>
+                </div>
+                <div class="filtro">
+                    <label>Género:</label>
+                    <select id="filtroGenero">
+                        <option value="Todos">
+                            Todos los Géneros
+                        </option>
+                    </select>
+                </div>
+                <button id="limpiarFiltros">
+                    Limpiar Filtros
+                </button>
+            </div>
+        </header>
+        <section class="tarjetas">
+            <div class="tarjeta">
+                <div class="icono tarjeta-azul"></div>
+                <div>
+                    <span>Personas analizadas</span>
+                    <strong id="preferenciasTotal">
+                        0
+                    </strong>
+                </div>
+            </div>
+            <div class="tarjeta">
+                <div class="icono tarjeta-verde"></div>
+                <div>
+                    <span>Compra de 1 a 2 prendas</span>
+                    <strong id="preferencias12">
+                        0%
+                    </strong>
+                </div>
+            </div>
+            <div class="tarjeta">
+                <div class="icono tarjeta-morado"></div>
+                <div>
+                    <span>Compra de 3 a 5 prendas</span>
+                    <strong id="preferencias35">
+                        0%
+                    </strong>
+                </div>
+            </div>
+            <div class="tarjeta">
+                <div class="icono tarjeta-dorado"></div>
+                <div>
+                    <span>Destina 5 % - 10 %</span>
+                    <strong id="preferencias510">
+                        0%
+                    </strong>
+                </div>
+            </div>
+        </section>
+        <section class="paneles">
+            <div class="panel">
+                <div class="titulo-panel">
+                    <h3>
+                        ¿Cuántas prendas compra aproximadamente en un mes?
+                    </h3>
+                    <span id="respuestasPrendas">
+                        0 respuestas
+                    </span>
+                </div>
+                <div class="lista-datos">
+                    <div>
+                        <span>Ninguna</span>
+
+                        <strong id="preferenciaNinguna">
+                            0%
+                        </strong>
+                    </div>
+                    <div>
+                        <span>De 1 a 2 prendas</span>
+
+                        <strong id="preferencia12">
+                            0%
+                        </strong>
+                    </div>
+                    <div>
+                        <span>De 3 a 5 prendas</span>
+
+                        <strong id="preferencia35">
+                            0%
+                        </strong>
+                    </div>
+                    <div>
+                        <span>De 6 a 8 prendas</span>
+
+                        <strong id="preferencia68">
+                            0%
+                        </strong>
+                    </div>
+                    <div>
+                        <span>Más de 9 prendas</span>
+                        <strong id="preferencia9">
+                            0%
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="titulo-panel">
+                    <h3>
+                        ¿Qué porcentaje de su presupuesto mensual destina a ropa?
+                    </h3>
+
+                    <span id="respuestasPresupuesto">
+                        0 respuestas
+                    </span>
+                </div>
+                <div class="lista-datos">
+                    <div>
+                        <span>Menos del 5 %</span>
+                        <strong id="presupuestoMenos5">
+                            0%
+                        </strong>
+                    </div>
+                    <div>
+                        <span>Entre el 5 % y el 10 %</span>
+                        <strong id="presupuesto510">
+                            0%
+                        </strong>
+                    </div>
+                    <div>
+                        <span>Entre el 11 % y el 19 %</span>
+                        <strong id="presupuesto1119">
+                            0%
+                        </strong>
+                    </div>
+                    <div>
+                        <span>Más del 20 %</span>
+                        <strong id="presupuesto20">
+                            0%
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="paneles">
+            <div class="panel">
+                <div class="titulo-panel">
+                    <h3>
+                        Distribución de prendas compradas
+                    </h3>
+                </div>
+                <div class="barras">
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>Ninguna</span>
+                            <strong id="barraTextoNinguna">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barraNinguna"
+                                class="barra-valor calidad"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>1 - 2 prendas</span>
+                            <strong id="barraTexto12">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barra12"
+                                class="barra-valor diseño"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>3 - 5 prendas</span>
+                            <strong id="barraTexto35">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barra35"
+                                class="barra-valor precio"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>6 - 8 prendas</span>
+                            <strong id="barraTexto68">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barra68"
+                                class="barra-valor calidad"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>Más de 9 prendas</span>
+                            <strong id="barraTexto9">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barra9"
+                                class="barra-valor precio"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="titulo-panel">
+                    <h3>
+                        Distribución del presupuesto destinado a ropa
+                    </h3>
+                </div>
+                <div class="barras">
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>Menos del 5 %</span>
+                            <strong id="barraTextoMenos5">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barraMenos5"
+                                class="barra-valor calidad"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>5 % - 10 %</span>
+                            <strong id="barraTexto510">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barra510"
+                                class="barra-valor diseño"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>11 % - 19 %</span>
+                            <strong id="barraTexto1119">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barra1119"
+                                class="barra-valor precio"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="barra-item">
+                        <div class="barra-texto">
+                            <span>Más del 20 %</span>
+                            <strong id="barraTexto20">0%</strong>
+                        </div>
+                        <div class="barra-fondo">
+                            <div
+                                id="barra20"
+                                class="barra-valor calidad"
+                                style="width:0%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="informacion">
+            <div>
+                <h3>
+                    Sobre las preferencias de compra
+                </h3>
+                <p>
+                    Esta sección presenta la distribución de las respuestas
+                    relacionadas con la cantidad de prendas adquiridas
+                    mensualmente y el porcentaje del presupuesto destinado
+                    a la compra de ropa.
+                </p>
+            </div>
+            <div>
+                <h3>
+                    Registros analizados
+                </h3>
+                <p>
+                    Registros:
+                    <strong id="preferenciasRegistros">
+                        0
+                    </strong>
+                </p>
+            </div>
+        </section>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="excel.js"></script>
+<script>
+    let ultimaLongitud = -1;
+
+    setInterval(function () {
+        if (typeof datosFiltrados === "undefined") return;
+        if (datosFiltrados.length === ultimaLongitud) return;
+        ultimaLongitud = datosFiltrados.length;
+        actualizarPreferencias(datosFiltrados);
+    }, 300);
+
+    function actualizarBarraPref(idBarra, idTexto, pct) {
+        const barra = document.getElementById(idBarra);
+        if (barra) barra.style.width = pct + "%";
+        actualizarTexto(idTexto, pct + "%");
+    }
+
+    function actualizarPreferencias(datos) {
+        const total = datos.length;
+        actualizarTexto("preferenciasTotal", total);
+        actualizarTexto("preferenciasRegistros", total);
+        actualizarTexto("respuestasPrendas", total + " respuestas");
+        actualizarTexto("respuestasPresupuesto", total + " respuestas");
+
+        // Prendas al mes
+        const ninguna = calcularPorcentaje(datos, columnas.prendas, ["Ninguna"]);
+        const p12 = calcularPorcentaje(datos, columnas.prendas, ["1 a 2"]);
+        const p35 = calcularPorcentaje(datos, columnas.prendas, ["3 a 5"]);
+        const p68 = calcularPorcentaje(datos, columnas.prendas, ["6 a 8"]);
+        const p9 = calcularPorcentaje(datos, columnas.prendas, ["Mas de 9"]);
+
+        actualizarTexto("preferenciaNinguna", ninguna + "%");
+        actualizarTexto("preferencia12", p12 + "%");
+        actualizarTexto("preferencia35", p35 + "%");
+        actualizarTexto("preferencia68", p68 + "%");
+        actualizarTexto("preferencia9", p9 + "%");
+        actualizarTexto("preferencias12", p12 + "%");
+        actualizarTexto("preferencias35", p35 + "%");
+
+        actualizarBarraPref("barraNinguna", "barraTextoNinguna", ninguna);
+        actualizarBarraPref("barra12", "barraTexto12", p12);
+        actualizarBarraPref("barra35", "barraTexto35", p35);
+        actualizarBarraPref("barra68", "barraTexto68", p68);
+        actualizarBarraPref("barra9", "barraTexto9", p9);
+
+        // Presupuesto destinado a ropa
+        const menos5 = calcularPorcentaje(datos, columnas.presupuesto, ["Menos del 5"]);
+        const entre5_10 = calcularPorcentaje(datos, columnas.presupuesto, ["Entre el 5"]);
+        const entre11_19 = calcularPorcentaje(datos, columnas.presupuesto, ["Entre el 11"]);
+        const mas20 = calcularPorcentaje(datos, columnas.presupuesto, ["Mas del 20"]);
+
+        actualizarTexto("presupuestoMenos5", menos5 + "%");
+        actualizarTexto("presupuesto510", entre5_10 + "%");
+        actualizarTexto("presupuesto1119", entre11_19 + "%");
+        actualizarTexto("presupuesto20", mas20 + "%");
+        actualizarTexto("preferencias510", entre5_10 + "%");
+
+        actualizarBarraPref("barraMenos5", "barraTextoMenos5", menos5);
+        actualizarBarraPref("barra510", "barraTexto510", entre5_10);
+        actualizarBarraPref("barra1119", "barraTexto1119", entre11_19);
+        actualizarBarraPref("barra20", "barraTexto20", mas20);
+    }
+</script>
+</body>
+</html>

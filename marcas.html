@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcas</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .barras-h { display: flex; flex-direction: column; gap: 14px; }
+        .barra-h-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #546e7a; }
+        .barra-h-nombre { width: 130px; flex-shrink: 0; }
+        .barra-h-pista { flex: 1; height: 11px; background: #eceff1; border-radius: 6px; overflow: hidden; }
+        .barra-h-relleno { height: 100%; border-radius: 6px; transition: width .3s; }
+        .barra-h-valor { width: 55px; text-align: right; font-weight: bold; color: #263238; }
+        .controles { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+        .controles label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: #607d8b; font-weight: bold; }
+        .controles select { padding: 9px 12px; border: 1px solid #d0d7dc; border-radius: 7px; background: white; color: #37474f; min-width: 160px; font-size: 13px; }
+        .prob-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 10px; background: #f5f9ff; margin-bottom: 12px; }
+        .prob-item span { color: #546e7a; font-size: 14px; }
+        .prob-item strong { font-size: 24px; color: #1976d2; }
+        .nota { font-size: 13px; color: #607d8b; line-height: 1.6; margin-top: 12px; }
+        .dona-fila { display: flex; align-items: center; gap: 25px; }
+        .leyenda { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .leyenda li { display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: #546e7a; }
+        .leyenda li span:first-child { display: flex; align-items: center; gap: 8px; }
+        .punto { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+        .leyenda li strong { color: #263238; }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <aside class="menu">
+            <div class="logo">
+                <div class="icono-logo"></div>
+                <h1>Análisis
+                    <span>de Datos de Moda</span>
+                </h1>
+            </div>
+
+            <nav>
+                <a href="prueba1.html">INICIO</a>
+                <a href="explorador.html">Explorador de Datos</a>
+                <a href="preferencias.html">Preferencias de compra</a>
+                <a href="sostenible.html">Moda sostenible</a>
+                <a href="economico.html">Análisis económico</a>
+                <a href="marcas.html" class="activo">Marcas</a>
+                <a href="estadistica.html">Estadística</a>
+                <a href="hallazgos.html">Hallazgos</a>
+            </nav>
+
+            <div class="menu-final">
+                <p>Moda consciente</p>
+                <small>Decisiones basadas en datos</small>
+            </div>
+        </aside>
+
+        <main class="Contenido">
+            <header class="encabezado">
+                <div>
+                    <h2>Marcas</h2>
+                    <p>Preferencias, probabilidades y distribución por marca.</p>
+                </div>
+
+                <div class="filtros">
+                    <div class="filtro">
+                        <label>Carrera:</label>
+                        <select id="filtroCarrera">
+                            <option value="Todas">Todas las Carreras</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Edad:</label>
+                        <select id="filtroEdad">
+                            <option value="Todas">Todas las edades</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro">
+                        <label>Género:</label>
+                        <select id="filtroGenero">
+                            <option value="Todos">Todos los Géneros</option>
+                        </select>
+                    </div>
+
+                    <button id="limpiarFiltros">Limpiar Filtros</button>
+                </div>
+            </header>
+
+            <section class="paneles">
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Preferencia por marca</h3>
+                    </div>
+                    <div class="barras-h" id="barrasMarcas"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3>Probabilidad</h3>
+                    </div>
+                    <div class="controles">
+                        <label>Selecciona una marca (A)
+                            <select id="selMarcaA"></select>
+                        </label>
+                        <label>Segunda marca (B)
+                            <select id="selMarcaB"></select>
+                        </label>
+                    </div>
+                    <div class="prob-item"><span id="etqProbA">P(A)</span><strong id="probA">0%</strong></div>
+                    <div class="prob-item"><span id="etqProbUnion">P(A o B)</span><strong id="probUnion">0%</strong></div>
+                    <p class="nota">Cada persona tiene una sola marca preferida, así que A y B son mutuamente excluyentes: P(A o B) = P(A) + P(B).</p>
+                </div>
+            </section>
+
+            <section class="paneles">
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3 id="tituloCarrera">Distribución por carrera</h3>
+                        <span id="totalFans"></span>
+                    </div>
+                    <div class="barras-h" id="barrasCarrera"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="titulo-panel">
+                        <h3 id="tituloGenero">Distribución por género</h3>
+                    </div>
+                    <div class="dona-fila">
+                        <div class="dona" id="donaGenero">
+                            <div class="centro-dona">
+                                <strong id="totalGenero">0</strong>
+                            </div>
+                        </div>
+                        <ul class="leyenda" id="leyendaGenero"></ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="excel.js"></script>
+    <script>
+        const MARCAS = ["Adidas", "Puma", "Nike", "Zara", "H&M", "Levi's"];
+        const COLORES = ["#4caf50", "#2196f3", "#f44336", "#9c27b0", "#ff9800", "#00bcd4", "#795548"];
+        let ultimaLongitud = -1;
+        let listasListas = false;
+
+        setInterval(function () {
+            if (typeof datosFiltrados === "undefined") return;
+            if (!listasListas && datosFiltrados.length) {
+                poblarSelectMarcas();
+                listasListas = true;
+            }
+            if (datosFiltrados.length === ultimaLongitud) return;
+            ultimaLongitud = datosFiltrados.length;
+            actualizarMarcas(datosFiltrados);
+        }, 300);
+
+        function poblarSelectMarcas() {
+            const a = document.getElementById("selMarcaA");
+            const b = document.getElementById("selMarcaB");
+            MARCAS.forEach(m => {
+                const op1 = document.createElement("option");
+                op1.value = m; op1.textContent = m;
+                a.appendChild(op1);
+                const op2 = document.createElement("option");
+                op2.value = m; op2.textContent = m;
+                b.appendChild(op2);
+            });
+            a.value = "Adidas";
+            b.value = "Puma";
+            a.addEventListener("change", () => actualizarMarcas(datosFiltrados));
+            b.addEventListener("change", () => actualizarMarcas(datosFiltrados));
+        }
+
+        function pintarBarrasH(idContenedor, items, color) {
+            const cont = document.getElementById(idContenedor);
+            if (!cont) return;
+            const max = Math.max(...items.map(i => i.pct), 1);
+            cont.innerHTML = items.map((it, i) => `
+                <div class="barra-h-item">
+                    <span class="barra-h-nombre">${it.etiqueta}</span>
+                    <div class="barra-h-pista"><div class="barra-h-relleno" style="width:${it.pct / max * 100}%;background:${Array.isArray(color) ? color[i % color.length] : color}"></div></div>
+                    <span class="barra-h-valor">${it.pct}%</span>
+                </div>`).join("");
+        }
+
+        function pintarDona(idDona, idLeyenda, categorias) {
+            const dona = document.getElementById(idDona);
+            const leyenda = document.getElementById(idLeyenda);
+            if (!dona) return;
+            const total = categorias.reduce((s, c) => s + c.pct, 0);
+            if (!total) {
+                dona.style.background = "#eceff1";
+            } else {
+                let acumulado = 0;
+                const tramos = categorias.map(c => {
+                    const inicio = acumulado;
+                    acumulado = redondear(acumulado + c.pct);
+                    return `${c.color} ${inicio}% ${acumulado}%`;
+                });
+                dona.style.background = `conic-gradient(${tramos.join(", ")})`;
+            }
+            if (leyenda) {
+                leyenda.innerHTML = categorias.map(c =>
+                    `<li><span><span class="punto" style="background:${c.color}"></span>${c.etiqueta}</span><strong>${c.pct}%</strong></li>`
+                ).join("");
+            }
+        }
+
+        function actualizarMarcas(datos) {
+            const total = datos.length;
+
+            const dist = MARCAS.map(m => ({
+                etiqueta: m,
+                pct: calcularPorcentaje(datos, columnas.marcaPreferida, [m])
+            })).sort((a, b) => b.pct - a.pct);
+            const otras = redondear(Math.max(0, 100 - dist.reduce((s, d) => s + d.pct, 0)));
+            dist.push({ etiqueta: "Otras", pct: otras });
+
+            pintarBarrasH("barrasMarcas", dist, COLORES);
+
+            const A = document.getElementById("selMarcaA").value || "Adidas";
+            const B = document.getElementById("selMarcaB").value || "Puma";
+
+            const pA = calcularPorcentaje(datos, columnas.marcaPreferida, [A]);
+            const pB = calcularPorcentaje(datos, columnas.marcaPreferida, [B]);
+            const pUnion = A === B ? pA : redondear(pA + pB);
+
+            actualizarTexto("etqProbA", `P(${A})`);
+            actualizarTexto("probA", pA + "%");
+            actualizarTexto("etqProbUnion", A === B ? `P(${A})` : `P(${A} o ${B})`);
+            actualizarTexto("probUnion", pUnion + "%");
+
+            actualizarTexto("tituloCarrera", `Distribución por carrera (${A})`);
+            actualizarTexto("tituloGenero", `Distribución por género (${A})`);
+
+            const fans = datos.filter(fila => normalizar(fila[columnas.marcaPreferida]).includes(normalizar(A)));
+            actualizarTexto("totalFans", `${fans.length} personas`);
+            actualizarTexto("totalGenero", fans.length);
+
+            const carreras = [...new Set(datos.map(f => String(f[columnas.carrera] ?? "").trim()).filter(Boolean))].sort();
+            const distCarrera = carreras.map(c => ({
+                etiqueta: c,
+                pct: fans.length ? redondear(fans.filter(f => String(f[columnas.carrera] ?? "").trim() === c).length / fans.length * 100) : 0
+            })).filter(c => c.pct > 0).sort((a, b) => b.pct - a.pct);
+
+            pintarBarrasH("barrasCarrera", distCarrera, "#4caf50");
+
+            const feme = fans.filter(f => normalizar(f[columnas.genero]).includes("femenino")).length;
+            const masc = fans.filter(f => normalizar(f[columnas.genero]).includes("masculino")).length;
+            const otro = fans.length - feme - masc;
+
+            pintarDona("donaGenero", "leyendaGenero", [
+                { color: "#e91e63", etiqueta: "Femenino", pct: fans.length ? redondear(feme / fans.length * 100) : 0 },
+                { color: "#2196f3", etiqueta: "Masculino", pct: fans.length ? redondear(masc / fans.length * 100) : 0 },
+                { color: "#9e9e9e", etiqueta: "Otro", pct: fans.length ? redondear(otro / fans.length * 100) : 0 }
+            ]);
+        }
+    </script>
+</body>
+</html>
