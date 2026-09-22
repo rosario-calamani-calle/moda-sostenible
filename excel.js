@@ -270,7 +270,6 @@ function actualizarContadores() {
     actualizarTexto("cantidadResultados", datosFiltrados.length + " resultados");
 }
 
-/* ---------- DASHBOARD (prueba1.html) ---------- */
 
 function actualizarDashboard(datos) {
     const total = datos.length;
@@ -281,7 +280,6 @@ function actualizarDashboard(datos) {
     actualizarTexto("respuestasCriterio", total + " respuestas");
     actualizarTexto("registrosAnalizados", total);
 
-    // Tipo de ropa
     const sostenible = calcularPorcentaje(datos, columnas.tipoRopa, ["Moda sostenible"]);
     const noFijo = calcularPorcentaje(datos, columnas.tipoRopa, ["No me fijo"]);
     const rapida = calcularPorcentaje(datos, columnas.tipoRopa, ["Moda rapida"]);
