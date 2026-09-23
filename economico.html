@@ -85,29 +85,6 @@
                 </div>
             </header>
 
-            <section class="tarjetas">
-                <div class="tarjeta">
-                    <div class="icono tarjeta-verde"></div>
-                    <div>
-                        <span>Gasto mensual estimado (promedio)</span>
-                        <strong id="gastoPromedio">Bs 0</strong>
-                    </div>
-                </div>
-
-                <div class="tarjeta">
-                    <div class="icono tarjeta-dorado"></div>
-                    <div>
-                        <span>Gasto total estimado (muestra)</span>
-                        <strong id="gastoTotalMuestra">Bs 0</strong>
-                    </div>
-                </div>
-            </section>
-            <p class="nota" style="margin: -10px 0 20px;">
-                Estimado a partir de la disposición a pagar por prenda (pregunta 4) × el número de prendas
-                compradas al mes (pregunta 1) de cada encuestado. No proviene de un monto declarado
-                directamente en la encuesta ni modifica los datos originales.
-            </p>
-
             <section class="paneles">
                 <div class="panel">
                     <div class="titulo-panel">
@@ -272,34 +249,6 @@
             svg.innerHTML = ejes + puntos + linea;
         }
 
-        /* Gasto mensual estimado en Bs = precio medio por prenda (pregunta 4) x
-           número de prendas al mes (pregunta 1). Es un dato calculado, no una
-           columna del Excel: no se modifica datos.xlsx en ningún momento. */
-        function actualizarGastoEstimado(datos) {
-            const gastos = [];
-
-            datos.forEach(fila => {
-                const precioNum = numDe(fila[columnas.precio], 950);
-                const prendasNum = numDe(fila[columnas.prendas], 10);
-
-                if (Number.isFinite(precioNum) && Number.isFinite(prendasNum)) {
-                    gastos.push(precioNum * prendasNum);
-                }
-            });
-
-            if (!gastos.length) {
-                actualizarTexto("gastoPromedio", "Bs 0");
-                actualizarTexto("gastoTotalMuestra", "Bs 0");
-                return;
-            }
-
-            const sumaTotal = gastos.reduce((a, b) => a + b, 0);
-            const promedio = Math.round(sumaTotal / gastos.length);
-
-            actualizarTexto("gastoPromedio", "Bs " + promedio.toLocaleString("es-BO"));
-            actualizarTexto("gastoTotalMuestra", "Bs " + Math.round(sumaTotal).toLocaleString("es-BO"));
-        }
-
         function actualizarEconomico(datos) {
             const total = datos.length;
 
@@ -330,13 +279,11 @@
                 { etiqueta: "> Bs 800", pct: mas800 }
             ], "#2196f3");
 
-            actualizarGastoEstimado(datos);
-
             const presupuestoNum = [];
             const prendasNum = [];
             datos.forEach(fila => {
-                const p = numDe(fila[columnas.presupuesto], 25);
-                const c = numDe(fila[columnas.prendas], 10);
+                const p = numDe(fila[columnas.presupuesto], 22.5);
+                const c = numDe(fila[columnas.prendas], 9.5);
                 if (Number.isFinite(p) && Number.isFinite(c)) { presupuestoNum.push(p); prendasNum.push(c); }
             });
 

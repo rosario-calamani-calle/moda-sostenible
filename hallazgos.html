@@ -146,17 +146,21 @@
             const adidas = calcularPorcentaje(datos, columnas.marcaPreferida, ["Adidas"]);
             const puma = calcularPorcentaje(datos, columnas.marcaPreferida, ["Puma"]);
 
+            // Puntos representativos alineados con el documento:
+            // "más de 9 prendas" = 9.5, "más del 20 %" = 22.5 %
             const presupuestoNum = [], prendasNum = [];
             datos.forEach(fila => {
-                const p = numDe(fila[columnas.presupuesto], 25);
-                const c = numDe(fila[columnas.prendas], 10);
+                const p = numDe(fila[columnas.presupuesto], 22.5);
+                const c = numDe(fila[columnas.prendas], 9.5);
                 if (Number.isFinite(p) && Number.isFinite(c)) { presupuestoNum.push(p); prendasNum.push(c); }
             });
             const r = presupuestoNum.length > 2 ? pearson(presupuestoNum, prendasNum) : NaN;
 
+            // Las 3 categorías de "qué haces con la ropa que ya no usas" se
+            // reportan por separado, sin combinarlas en un índice único.
+            const basura = calcularPorcentaje(datos, columnas.ropaNoUsa, ["basura"]);
             const dono = calcularPorcentaje(datos, columnas.ropaNoUsa, ["dono", "regalo"]);
             const vendo = calcularPorcentaje(datos, columnas.ropaNoUsa, ["vendo", "reciclo"]);
-            const indiceSostenible = redondear(dono + vendo);
 
             const criterioTop = [
                 { etiqueta: "diseño y estilo", pct: diseno },
@@ -168,8 +172,8 @@
             const relacionTexto = !Number.isFinite(r)
                 ? "No hay datos suficientes para calcular la relación."
                 : Math.abs(r) < 0.2
-                    ? `No se encontró una relación lineal significativa entre el presupuesto y el número de prendas compradas (r = ${r.toFixed(2)}).`
-                    : `Existe una relación ${r > 0 ? "positiva" : "negativa"} ${fuerza} entre el presupuesto y el número de prendas compradas (r = ${r.toFixed(2)}).`;
+                    ? `No se encontró una relación lineal significativa entre el presupuesto y el número de prendas compradas (r = ${r.toFixed(4)}).`
+                    : `Existe una relación ${r > 0 ? "positiva" : "negativa"} ${fuerza} entre el presupuesto y el número de prendas compradas (r = ${r.toFixed(4)}).`;
 
             const tarjetas = [
                 ["rosa", "Mayor preferencia", `La moda sostenible es la categoría más elegida por los estudiantes (${sostenible}%).`],
@@ -177,7 +181,7 @@
                 ["naranja", "Presupuesto", `El ${presCategorias.pct}% de los encuestados destina ${presCategorias.etiqueta} de su presupuesto mensual a ropa.`],
                 ["verde", "Marcas", `Adidas y Puma son las marcas más preferidas, con ${adidas}% y ${puma}% respectivamente.`],
                 ["morado", "Relación económica", relacionTexto],
-                ["turquesa", "Compromiso sostenible", `El ${indiceSostenible}% de los encuestados declara donar, regalar, vender o reciclar la ropa que ya no utiliza.`]
+                ["turquesa", "Comportamiento con la ropa que ya no usan", `El ${basura}% la tira a la basura, el ${dono}% la dona o la regala, y el ${vendo}% la vende o recicla.`]
             ];
 
             document.getElementById("tarjetas").innerHTML = tarjetas.map(([color, titulo, texto]) =>

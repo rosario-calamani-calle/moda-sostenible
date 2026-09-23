@@ -12,10 +12,6 @@
         .leyenda li span:first-child { display: flex; align-items: center; gap: 8px; }
         .punto { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
         .leyenda li strong { color: #263238; }
-        .indice { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 210px; text-align: center; }
-        .indice .centro-dona strong { font-size: 28px; color: #2e7d32; }
-        .indice p { font-weight: bold; color: #37474f; margin: 0; }
-        .indice small { color: #90a4ae; }
         .dato-card { padding: 16px 18px; border-radius: 10px; background: #e8f5e9; border-left: 5px solid #4caf50; }
         .dato-card.ambar { background: #fff8e1; border-color: #ffb300; margin-top: 14px; }
         .dato-card p { margin: 0; color: #455a64; font-size: 14px; line-height: 1.6; }
@@ -99,23 +95,6 @@
 
                 <div class="panel">
                     <div class="titulo-panel">
-                        <h3>Índice de comportamiento sostenible</h3>
-                    </div>
-                    <div class="indice">
-                        <div class="dona" id="donaIndice">
-                            <div class="centro-dona">
-                                <strong id="indiceValor">0%</strong>
-                            </div>
-                        </div>
-                        <p id="indiceNivel">Nivel de compromiso</p>
-                        <small>% que dona, regala, vende o recicla la ropa que ya no usa</small>
-                    </div>
-                </div>
-            </section>
-
-            <section class="paneles">
-                <div class="panel">
-                    <div class="titulo-panel">
                         <h3>¿Qué haces con la ropa que ya no usas?</h3>
                     </div>
                     <div class="dona-fila">
@@ -127,7 +106,9 @@
                         <ul class="leyenda" id="leyendaDestino"></ul>
                     </div>
                 </div>
+            </section>
 
+            <section class="paneles">
                 <div class="panel">
                     <div class="titulo-panel">
                         <h3>Dato relevante</h3>
@@ -182,24 +163,11 @@
                 { color: "#9c27b0", etiqueta: "La vendo o reciclo", pct: vendo }
             ]);
 
-            const indice = redondear(dono + vendo);
-
-            const donaIndice = document.getElementById("donaIndice");
-            if (donaIndice) {
-                donaIndice.style.background = total
-                    ? `conic-gradient(#4caf50 0% ${indice}%, #eceff1 ${indice}% 100%)`
-                    : "#eceff1";
-            }
-
-            actualizarTexto("indiceValor", indice + "%");
-            actualizarTexto(
-                "indiceNivel",
-                indice >= 60 ? "Nivel alto de compromiso" : indice >= 40 ? "Nivel medio de compromiso" : "Nivel bajo de compromiso"
-            );
-
+            // Las 3 categorías se reportan por separado (basura / dona / vende),
+            // sin combinarlas en un índice único.
             actualizarTexto(
                 "datoRelevante",
-                `${indice}% de los encuestados declara donar, regalar, vender o reciclar la ropa que ya no utiliza, mientras que el ${basura}% la tira a la basura.`
+                `El ${basura}% de los encuestados tira su ropa a la basura, el ${dono}% la dona o la regala, y el ${vendo}% la vende o recicla.`
             );
 
             const sostenibles = datos.filter(fila => normalizar(fila[columnas.tipoRopa]).includes("moda sostenible"));

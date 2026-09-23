@@ -38,6 +38,9 @@
         .lista-datos span { color: #546e7a; font-size: 14px; }
         .lista-datos strong { color: #263238; font-size: 14px; }
         .nota { font-size: 13px; color: #607d8b; line-height: 1.6; margin-top: 12px; }
+        .subtitulo { font-size: 14px; color: #37474f; font-weight: bold; margin: 18px 0 12px; }
+        .subtitulo:first-child { margin-top: 0; }
+        .ecuacion { background: #f5f9ff; border-radius: 8px; padding: 12px 16px; font-size: 14px; color: #1565c0; font-weight: bold; margin-bottom: 14px; }
     </style>
 </head>
 <body>
@@ -102,9 +105,9 @@
 
             <div class="tabs">
                 <button class="tab activa" data-tab="tabDesc">Descriptiva</button>
-                <button class="tab" data-tab="tabProb">Probabilidad</button>
                 <button class="tab" data-tab="tabDist">Distribuciones</button>
                 <button class="tab" data-tab="tabInf">Inferencia</button>
+                <button class="tab" data-tab="tabCorr">Correlación y Regresión</button>
             </div>
 
             <div class="tab-panel activa" id="tabDesc">
@@ -112,32 +115,11 @@
                     <div class="panel">
                         <div class="titulo-panel"><h3>Estadística descriptiva</h3></div>
                         <div id="descTabla"></div>
+                        <p class="nota">Para "más de 9 prendas" y "más de 9 veces/año" se usa 9,5; para "más del 20 %" se usa 22,5 %; para "más de Bs 801" se usa Bs 900; para "cinco o más marcas" se usa 5, siguiendo los mismos puntos representativos del documento.</p>
                     </div>
                     <div class="panel">
                         <div class="titulo-panel"><h3>Distribución (Nº de prendas al mes)</h3></div>
                         <div class="barras-v" id="barrasHist"></div>
-                    </div>
-                </section>
-            </div>
-
-            <div class="tab-panel" id="tabProb">
-                <section class="paneles">
-                    <div class="panel">
-                        <div class="titulo-panel"><h3>Probabilidad de marcas preferidas</h3></div>
-                        <div id="probTabla"></div>
-                        <p class="nota" id="probTexto"></p>
-                    </div>
-                    <div class="panel">
-                        <div class="titulo-panel"><h3>Probabilidad conjunta</h3></div>
-                        <div class="controles">
-                            <label>Tipo de ropa (X)
-                                <select id="selProbX"></select>
-                            </label>
-                            <label>Género (Y)
-                                <select id="selProbY"></select>
-                            </label>
-                        </div>
-                        <div id="probCruzTabla"></div>
                     </div>
                 </section>
             </div>
@@ -147,9 +129,6 @@
                     <div class="panel">
                         <div class="titulo-panel"><h3>Distribución Binomial</h3></div>
                         <div class="controles">
-                            <label>Marca (éxito)
-                                <select id="binMarca"></select>
-                            </label>
                             <label>n (personas)
                                 <input type="number" id="binN" value="10" min="1" max="60">
                             </label>
@@ -157,6 +136,7 @@
                                 <input type="number" id="binK" value="3" min="0" max="60">
                             </label>
                         </div>
+                        <p class="nota">Evento de éxito: la persona prefiere moda sostenible. p = 133/241 = 0.5519, calculado a partir de los datos filtrados.</p>
                         <div id="binResultado"></div>
                     </div>
                     <div class="panel">
@@ -177,17 +157,59 @@
                             <label>Significancia
                                 <select id="hipAlfa">
                                     <option value="0.10">α = 0.10</option>
-                                    <option value="0.05" selected>α = 0.05</option>
-                                    <option value="0.01">α = 0.01</option>
+                                    <option value="0.05">α = 0.05</option>
+                                    <option value="0.01" selected>α = 0.01</option>
                                 </select>
                             </label>
                         </div>
-                        <p class="nota">Variable: Nº de prendas compradas al mes. H₀: μ ≤ μ₀ &nbsp;|&nbsp; H₁: μ &gt; μ₀</p>
+                        <p class="nota">Variable: Nº de prendas compradas al mes. H₀: μ ≤ μ₀ &nbsp;|&nbsp; H₁: μ &gt; μ₀. Se usa el estadístico t de Student (no la aproximación normal), igual que en el documento.</p>
                         <div id="hipResultado"></div>
+                        <svg id="svgHipotesis" viewBox="0 0 500 220" style="width:100%;height:220px;margin-top:14px"></svg>
+                        <p class="nota" id="hipGraficoTexto"></p>
                     </div>
                     <div class="panel">
-                        <div class="titulo-panel"><h3>Intervalo de confianza (95 %)</h3></div>
+                        <div class="titulo-panel"><h3>Intervalos de confianza</h3></div>
+                        <div class="controles">
+                            <label>Nivel de confianza
+                                <select id="icNivel">
+                                    <option value="90">90 %</option>
+                                    <option value="95">95 %</option>
+                                    <option value="99" selected>99 %</option>
+                                </select>
+                            </label>
+                        </div>
+                        <p class="subtitulo">Media de prendas compradas al mes</p>
                         <div class="lista-datos" id="icTabla"></div>
+                        <p class="subtitulo">Proporción que prefiere moda sostenible</p>
+                        <div class="lista-datos" id="icPropTabla"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-panel" id="tabCorr">
+                <section class="paneles">
+                    <div class="panel">
+                        <div class="titulo-panel">
+                            <h3>Correlación de Pearson</h3>
+                            <span>vs. Nº de prendas compradas al mes</span>
+                        </div>
+                        <div id="corrTabla"></div>
+                        <p class="nota">Se usan los mismos puntos representativos de los intervalos que en la tabla descriptiva. Los coeficientes cercanos a 0 indican ausencia de relación lineal fuerte; no implican causalidad.</p>
+                    </div>
+                    <div class="panel">
+                        <div class="titulo-panel"><h3>Regresión lineal simple</h3></div>
+                        <p class="nota">Variable dependiente: prendas/mes. Variable independiente: % del presupuesto destinado a ropa.</p>
+                        <div class="ecuacion" id="regSimpleEcuacion"></div>
+                        <div class="lista-datos" id="regSimpleTabla"></div>
+                    </div>
+                </section>
+                <section class="paneles">
+                    <div class="panel" style="grid-column: 1 / -1;">
+                        <div class="titulo-panel"><h3>Regresión lineal múltiple</h3></div>
+                        <p class="nota">Variable dependiente: prendas/mes. Variables explicativas: % presupuesto, compras de marca reconocida/año, marcas frecuentes y disposición a pagar.</p>
+                        <div class="ecuacion" id="regMultEcuacion"></div>
+                        <div id="regMultTabla"></div>
+                        <div class="lista-datos" id="regMultResumen" style="margin-top:14px"></div>
                     </div>
                 </section>
             </div>
@@ -199,7 +221,6 @@
     <script>
         let ultimaLongitud = -1;
         let listasListas = false;
-        const MARCAS = ["Adidas", "Puma", "Nike", "Zara", "H&M", "Levi's"];
 
         document.querySelectorAll(".tab").forEach(boton => boton.addEventListener("click", () => {
             document.querySelectorAll(".tab").forEach(b => b.classList.toggle("activa", b === boton));
@@ -218,34 +239,16 @@
         }, 300);
 
         function poblarListas() {
-            const binMarca = document.getElementById("binMarca");
-            MARCAS.forEach(m => {
-                const op = document.createElement("option");
-                op.value = m; op.textContent = m;
-                binMarca.appendChild(op);
-            });
-            binMarca.value = "Adidas";
-
-            const selX = document.getElementById("selProbX");
-            ["Moda sostenible", "Moda rapida", "No me fijo"].forEach((v, i) => {
-                const op = document.createElement("option");
-                op.value = v; op.textContent = ["Moda sostenible", "Moda rápida", "No me fijo en eso"][i];
-                selX.appendChild(op);
-            });
-
-            const selY = document.getElementById("selProbY");
-            ["Femenino", "Masculino"].forEach(v => {
-                const op = document.createElement("option");
-                op.value = v; op.textContent = v;
-                selY.appendChild(op);
-            });
-
-            ["binMarca", "binN", "binK", "selProbX", "selProbY", "hipMu0", "hipAlfa"].forEach(id => {
+            ["binN", "binK", "hipMu0", "hipAlfa", "icNivel"].forEach(id => {
                 document.getElementById(id).addEventListener("input", () => actualizarTodo(datosFiltrados));
                 document.getElementById(id).addEventListener("change", () => actualizarTodo(datosFiltrados));
             });
         }
 
+        /* ---------- Puntos representativos de las respuestas por intervalos ----------
+           Mismos supuestos que el documento: 9,5 para "más de 9" (prendas y
+           compras/año), 22,5% para "más del 20%", Bs 900 para "más de Bs 801"
+           y 5 para "cinco o más marcas". */
         function numDe(texto, abierto) {
             const t = normalizar(texto);
             if (!t) return NaN;
@@ -258,18 +261,41 @@
             return nums[0];
         }
 
+        // "Marcas frecuentes" (pregunta 5) se responde con números escritos en
+        // palabras ("Una sola marca", "Dos marcas"...), no con dígitos, así que
+        // numDe() no puede leerla. "Cinco o más marcas" se toma como 5, igual
+        // que en el documento.
+        function numDeMarcas(texto) {
+            const t = normalizar(texto);
+            if (!t) return NaN;
+            if (t.includes("una sola marca")) return 1;
+            if (t.includes("dos marcas")) return 2;
+            if (t.includes("tres marcas")) return 3;
+            if (t.includes("cuatro marcas")) return 4;
+            if (t.includes("cinco o mas marcas")) return 5;
+            return NaN;
+        }
+
+        // "Disposición a pagar" (pregunta 4) tiene dos categorías superpuestas
+        // ("Entre Bs 100 y Bs 250" y "Entre Bs 101 y Bs 250", ver limitaciones
+        // del documento); ambas se tratan como la misma categoría con el mismo
+        // punto representativo (Bs 175), igual que en el documento.
+        function numDePrecio(texto) {
+            const t = normalizar(texto);
+            if (!t) return NaN;
+            if (t.includes("menos")) return 50;
+            if (t.includes("100 y bs 250") || t.includes("101 y bs 250")) return 175;
+            if (t.includes("251 y bs 500")) return 375.5;
+            if (t.includes("501 y bs 800")) return 650.5;
+            if (t.includes("mas de")) return 900;
+            return NaN;
+        }
+
         function media(a) { return a.reduce((s, v) => s + v, 0) / a.length; }
         function desv(a) { const m = media(a); return Math.sqrt(a.reduce((s, v) => s + (v - m) ** 2, 0) / (a.length - 1)); }
         function mediana(a) {
             const s = [...a].sort((x, y) => x - y), n = s.length;
             return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
-        }
-        function moda(a) {
-            const cont = new Map();
-            a.forEach(v => cont.set(v, (cont.get(v) || 0) + 1));
-            let mejor = NaN, max = 0;
-            cont.forEach((n, v) => { if (n > max) { max = n; mejor = v; } });
-            return mejor;
         }
 
         function tabla(encabezados, filas) {
@@ -289,6 +315,8 @@
                 </div>`).join("");
         }
 
+        /* ---------- Funciones estadísticas compartidas ---------- */
+
         function gammaln(x) {
             const C = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
             if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - gammaln(1 - x);
@@ -304,6 +332,64 @@
             return Math.exp(gammaln(n + 1) - gammaln(k + 1) - gammaln(n - k + 1) + k * Math.log(p) + (n - k) * Math.log(1 - p));
         }
 
+        function betacf(a, b, x) {
+            const FPMIN = 1e-300;
+            const qab = a + b, qap = a + 1, qam = a - 1;
+            let c = 1, d = 1 - qab * x / qap;
+            if (Math.abs(d) < FPMIN) d = FPMIN;
+            d = 1 / d;
+            let h = d;
+            for (let m = 1; m <= 200; m++) {
+                const m2 = 2 * m;
+                let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+                d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+                c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+                d = 1 / d; h *= d * c;
+                aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+                d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+                c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+                d = 1 / d;
+                const del = d * c;
+                h *= del;
+                if (Math.abs(del - 1) < 3e-9) break;
+            }
+            return h;
+        }
+
+        function betai(a, b, x) {
+            if (x <= 0) return 0;
+            if (x >= 1) return 1;
+            const bt = Math.exp(gammaln(a + b) - gammaln(a) - gammaln(b) + a * Math.log(x) + b * Math.log(1 - x));
+            return x < (a + 1) / (a + b + 2) ? bt * betacf(a, b, x) / a : 1 - bt * betacf(b, a, 1 - x) / b;
+        }
+
+        // P(T <= t) para t >= 0 (por simetría de la t de Student).
+        function tCdf(t, gl) {
+            const x = gl / (gl + t * t);
+            return 1 - 0.5 * betai(gl / 2, 0.5, x);
+        }
+
+        // P(T > t) para cualquier signo de t (cola derecha), usando la simetría de la t.
+        function pColaDerechaT(t, gl) {
+            return t >= 0 ? 1 - tCdf(t, gl) : tCdf(-t, gl);
+        }
+
+        // Valor crítico t tal que P(T <= t) = p, por bisección (tCdf es monótona).
+        function tInv(p, gl) {
+            let lo = 0, hi = 20;
+            for (let i = 0; i < 80; i++) {
+                const mid = (lo + hi) / 2;
+                if (tCdf(mid, gl) < p) lo = mid; else hi = mid;
+            }
+            return (lo + hi) / 2;
+        }
+
+        function fCdf(f, d1, d2) {
+            if (f <= 0) return 0;
+            const x = d1 * f / (d1 * f + d2);
+            return betai(d1 / 2, d2 / 2, x);
+        }
+
         function pnormDer(z) {
             const t = 1 / (1 + 0.2316419 * Math.abs(z));
             const d = 0.3989423 * Math.exp(-z * z / 2);
@@ -311,17 +397,164 @@
             return z >= 0 ? p : 1 - p;
         }
 
-        function actualizarDescriptiva(datos) {
-            const edad = datos.map(f => numDe(f[columnas.edad], 30.5)).filter(Number.isFinite);
-            const prendas = datos.map(f => numDe(f[columnas.prendas], 10)).filter(Number.isFinite);
-            const presu = datos.map(f => numDe(f[columnas.presupuesto], 25)).filter(Number.isFinite);
-            const precio = datos.map(f => numDe(f[columnas.precio], 950)).filter(Number.isFinite);
+        function pearsonR(x, y) {
+            const n = x.length;
+            const mx = media(x), my = media(y);
+            let sxy = 0, sxx = 0, syy = 0;
+            for (let i = 0; i < n; i++) {
+                sxy += (x[i] - mx) * (y[i] - my);
+                sxx += (x[i] - mx) ** 2;
+                syy += (y[i] - my) ** 2;
+            }
+            return sxy / Math.sqrt(sxx * syy);
+        }
 
-            const fila = (nombre, arr) => [nombre, media(arr).toFixed(2), mediana(arr).toFixed(2), moda(arr).toFixed(2), desv(arr).toFixed(2)];
+        // Prueba de significancia de r (equivalente a la pendiente en la regresión simple).
+        function pValorCorrelacion(r, n) {
+            if (n <= 2) return NaN;
+            const t = r * Math.sqrt((n - 2) / (1 - r * r));
+            return 2 * (1 - tCdf(Math.abs(t), n - 2));
+        }
+
+        function regresionSimple(x, y) {
+            const n = x.length;
+            const r = pearsonR(x, y);
+            const sx = desv(x), sy = desv(y);
+            const b1 = r * sy / sx;
+            const b0 = media(y) - b1 * media(x);
+            const r2 = r * r;
+            const pValor = pValorCorrelacion(r, n);
+            return { b0, b1, r, r2, pValor, n };
+        }
+
+        /* Inversión de matriz cuadrada por Gauss-Jordan (usada solo para la
+           regresión múltiple, matrices pequeñas de 5x5). */
+        function invertirMatriz(m) {
+            const n = m.length;
+            const A = m.map((fila, i) => [...fila, ...Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))]);
+            for (let i = 0; i < n; i++) {
+                if (Math.abs(A[i][i]) < 1e-10) {
+                    for (let r = i + 1; r < n; r++) {
+                        if (Math.abs(A[r][i]) > 1e-10) { [A[i], A[r]] = [A[r], A[i]]; break; }
+                    }
+                }
+                const pivote = A[i][i];
+                for (let j = 0; j < 2 * n; j++) A[i][j] /= pivote;
+                for (let r = 0; r < n; r++) {
+                    if (r === i) continue;
+                    const factor = A[r][i];
+                    for (let j = 0; j < 2 * n; j++) A[r][j] -= factor * A[i][j];
+                }
+            }
+            return A.map(fila => fila.slice(n));
+        }
+
+        // Regresión lineal múltiple por ecuaciones normales: β = (XᵀX)⁻¹Xᵀy.
+        // filas de X ya incluyen el 1 del intercepto.
+        function regresionMultiple(X, y) {
+            const n = X.length, k = X[0].length;
+            const XtX = Array.from({ length: k }, () => new Array(k).fill(0));
+            const Xty = new Array(k).fill(0);
+            for (let i = 0; i < n; i++) {
+                for (let a = 0; a < k; a++) {
+                    Xty[a] += X[i][a] * y[i];
+                    for (let b = 0; b < k; b++) XtX[a][b] += X[i][a] * X[i][b];
+                }
+            }
+            const XtXinv = invertirMatriz(XtX);
+            const beta = XtXinv.map(fila => fila.reduce((s, v, idx) => s + v * Xty[idx], 0));
+            const yhat = X.map(fila => fila.reduce((s, v, idx) => s + v * beta[idx], 0));
+            const ymedia = media(y);
+            const sst = y.reduce((s, v) => s + (v - ymedia) ** 2, 0);
+            const sse = y.reduce((s, v, i) => s + (v - yhat[i]) ** 2, 0);
+            const r2 = 1 - sse / sst;
+            const dfR = k - 1, dfE = n - k;
+            const fStat = (sst - sse) / dfR / (sse / dfE);
+            const pValor = 1 - fCdf(fStat, dfR, dfE);
+            const mse = sse / dfE;
+            const seBeta = XtXinv.map((fila, i) => Math.sqrt(mse * fila[i]));
+            const pBeta = beta.map((b, i) => 2 * (1 - tCdf(Math.abs(b / seBeta[i]), dfE)));
+            return { beta, seBeta, pBeta, r2, fStat, pValor, n, k, dfR, dfE };
+        }
+
+        /* Dibuja la curva normal estándar, sombrea la región de rechazo
+           (cola derecha desde el valor crítico) y marca el estadístico t
+           calculado. Solo es una ayuda visual para la prueba de hipótesis
+           unilateral derecha (la forma de la t de Student con 240 g.l. es
+           prácticamente idéntica a la normal estándar). */
+        function fdpNormal(x) { return 0.3989423 * Math.exp(-x * x / 2); }
+
+        function pintarCurvaHipotesis(idSvg, z, zCrit, rechaza) {
+            const svg = document.getElementById(idSvg);
+            if (!svg) return;
+
+            const ancho = 500, alto = 220, margen = 36;
+            const xMin = -4, xMax = 4;
+            const px = x => margen + (x - xMin) / (xMax - xMin) * (ancho - margen - 15);
+            const maxD = fdpNormal(0);
+            const py = d => alto - margen - (d / maxD) * (alto - margen - 20);
+
+            let curva = "";
+            for (let x = xMin; x <= xMax + 1e-6; x += 0.08) {
+                curva += (curva ? " L " : "M ") + px(x).toFixed(1) + "," + py(fdpNormal(x)).toFixed(1);
+            }
+
+            let region = `M ${px(zCrit).toFixed(1)},${py(0).toFixed(1)} `;
+            for (let x = zCrit; x <= xMax + 1e-6; x += 0.06) {
+                region += `L ${px(x).toFixed(1)},${py(fdpNormal(x)).toFixed(1)} `;
+            }
+            region += `L ${px(xMax).toFixed(1)},${py(0).toFixed(1)} Z`;
+
+            const xZ = Math.max(xMin, Math.min(xMax, z));
+            const colorZ = rechaza ? "#f44336" : "#2196f3";
+            const lineaZ = `<line x1="${px(xZ)}" y1="${py(0)}" x2="${px(xZ)}" y2="${py(fdpNormal(xZ))}" stroke="${colorZ}" stroke-width="2.5"></line>`;
+            const lineaCrit = `<line x1="${px(zCrit)}" y1="${py(0)}" x2="${px(zCrit)}" y2="${py(fdpNormal(zCrit))}" stroke="#607d8b" stroke-width="1.5" stroke-dasharray="4,3"></line>`;
+            const eje = `<line x1="${margen}" y1="${py(0)}" x2="${ancho - 10}" y2="${py(0)}" stroke="#cfd8dc"></line>`;
+
+            const etiquetaZCrit = `<text x="${px(zCrit)}" y="${py(0) + 16}" text-anchor="middle" font-size="11" fill="#607d8b">t crít = ${zCrit.toFixed(3)}</text>`;
+            const etiquetaZ = `<text x="${px(xZ)}" y="${Math.max(14, py(fdpNormal(xZ)) - 8)}" text-anchor="middle" font-size="12" font-weight="bold" fill="${colorZ}">t = ${z.toFixed(3)}</text>`;
+            const etiquetaRegion = `<text x="${(px(zCrit) + px(xMax)) / 2}" y="${margen - 6}" text-anchor="middle" font-size="11" fill="#c62828">Región de rechazo</text>`;
+
+            svg.innerHTML = `<path d="${curva}" fill="none" stroke="#37474f" stroke-width="1.8"></path>
+                <path d="${region}" fill="rgba(244,67,54,0.18)" stroke="none"></path>
+                ${eje}${lineaCrit}${lineaZ}${etiquetaZCrit}${etiquetaZ}${etiquetaRegion}`;
+        }
+
+        /* ---------- Extracción de variables numéricas de los datos filtrados ---------- */
+
+        function variablesNumericas(datos) {
+            return {
+                prendas: datos.map(f => numDe(f[columnas.prendas], 9.5)),
+                presupuesto: datos.map(f => numDe(f[columnas.presupuesto], 22.5)),
+                comprasAnio: datos.map(f => numDe(f[columnas.marcaReconocida], 9.5)),
+                precio: datos.map(f => numDePrecio(f[columnas.precio])),
+                marcasFrec: datos.map(f => numDeMarcas(f[columnas.marcasFrecuentes]))
+            };
+        }
+
+        function actualizarDescriptiva(datos) {
+            const v = variablesNumericas(datos);
+            const prendas = v.prendas.filter(Number.isFinite);
+            const presu = v.presupuesto.filter(Number.isFinite);
+            const comprasAnio = v.comprasAnio.filter(Number.isFinite);
+            const precio = v.precio.filter(Number.isFinite);
+            const marcasFrec = v.marcasFrec.filter(Number.isFinite);
+
+            const fila = (nombre, arr) => {
+                if (!arr.length) return [nombre, "—", "—", "—", "—", "—", "—", "—"];
+                const m = media(arr), d = desv(arr), min = Math.min(...arr), max = Math.max(...arr);
+                return [nombre, m.toFixed(2), mediana(arr).toFixed(2), d.toFixed(2), (d * d).toFixed(2), min.toFixed(2), max.toFixed(2), (max - min).toFixed(2)];
+            };
 
             document.getElementById("descTabla").innerHTML = tabla(
-                ["Variable", "Media", "Mediana", "Moda", "Desv. Est."],
-                [fila("Edad", edad), fila("Nº de prendas", prendas), fila("% presupuesto", presu), fila("Disposición a pagar", precio)]
+                ["Variable", "Media", "Mediana", "Desv. Est.", "Varianza", "Mínimo", "Máximo", "Rango"],
+                [
+                    fila("Prendas/mes", prendas),
+                    fila("% presupuesto", presu),
+                    fila("Compras marca/año", comprasAnio),
+                    fila("Disposición Bs", precio),
+                    fila("Marcas frecuentes", marcasFrec)
+                ]
             );
 
             const bins = [
@@ -338,57 +571,26 @@
             pintarBarrasV("barrasHist", bins, "#9c27b0");
         }
 
-        /* Todas las probabilidades de esta pestaña se muestran en % (antes
-           salían como fracción decimal, ej. 0.2583). La frecuencia bruta
-           (n/total) se deja como referencia junto al porcentaje. */
-        function actualizarProbabilidad(datos) {
-            const total = datos.length;
-            const marcas = MARCAS.map(m => ({ m, n: datos.filter(f => normalizar(f[columnas.marcaPreferida]).includes(normalizar(m))).length }));
-
-            document.getElementById("probTabla").innerHTML = tabla(
-                ["Marca", "Frecuencia", "Probabilidad"],
-                marcas.map(x => [x.m, x.n, `${x.n}/${total} = ${(x.n / total * 100).toFixed(2)}%`])
-            );
-
-            const deportivas = ["Adidas", "Puma", "Nike"];
-            const nDep = marcas.filter(x => deportivas.includes(x.m)).reduce((s, x) => s + x.n, 0);
-            const pA = marcas.find(x => x.m === "Adidas").n / total;
-            const pDep = nDep / total;
-
-            document.getElementById("probTexto").textContent =
-                `Si se sabe que un estudiante prefiere una marca deportiva (Adidas, Puma o Nike), la probabilidad de que sea Adidas es P(Adidas | deportiva) = ${(pA / pDep * 100).toFixed(2)}%.`;
-
-            const X = document.getElementById("selProbX").value || "Moda sostenible";
-            const Y = document.getElementById("selProbY").value || "Femenino";
-            const nX = datos.filter(f => normalizar(f[columnas.tipoRopa]).includes(normalizar(X))).length;
-            const nY = datos.filter(f => normalizar(f[columnas.genero]).includes(normalizar(Y))).length;
-            const nXY = datos.filter(f => normalizar(f[columnas.tipoRopa]).includes(normalizar(X)) && normalizar(f[columnas.genero]).includes(normalizar(Y))).length;
-
-            document.getElementById("probCruzTabla").innerHTML = tabla(
-                ["Probabilidad", "Valor"],
-                [[`P(${X})`, (nX / total * 100).toFixed(2) + "%"],
-                [`P(${Y})`, (nY / total * 100).toFixed(2) + "%"],
-                [`P(${X} ∩ ${Y})`, (nXY / total * 100).toFixed(2) + "%"],
-                [`P(${X} | ${Y})`, nY ? (nXY / nY * 100).toFixed(2) + "%" : "—"]]
-            );
-        }
-
         function actualizarDistribuciones(datos) {
             const total = datos.length;
-            const marca = document.getElementById("binMarca").value || "Adidas";
             let n = parseInt(document.getElementById("binN").value) || 10;
             n = Math.min(Math.max(n, 1), 60);
             let k = parseInt(document.getElementById("binK").value) || 0;
             k = Math.min(Math.max(k, 0), n);
 
-            const p = datos.filter(f => normalizar(f[columnas.marcaPreferida]).includes(normalizar(marca))).length / total;
+            // Evento de éxito fijo: prefiere moda sostenible (p = 133/241 = 0.5519).
+            const p = datos.filter(f => normalizar(f[columnas.tipoRopa]).includes("moda sostenible")).length / total;
+
+            let pMayorIgual5 = 0;
+            for (let i = 5; i <= n; i++) pMayorIgual5 += dbinom(i, n, p);
 
             document.getElementById("binResultado").innerHTML = tabla(
                 ["Elemento", "Valor"],
                 [["Distribución", `X ~ Binomial(n = ${n}, p = ${p.toFixed(4)} &nbsp;→&nbsp; ${(p * 100).toFixed(2)}%)`],
                 ["Media (n·p)", (n * p).toFixed(3)],
                 ["Desviación estándar", Math.sqrt(n * p * (1 - p)).toFixed(3)],
-                [`P(X = ${k})`, `<strong>${(dbinom(k, n, p) * 100).toFixed(2)} %</strong>`]]
+                [`P(X = ${k})`, `<strong>${(dbinom(k, n, p) * 100).toFixed(2)} %</strong>`],
+                ["P(X ≥ 5)", `<strong>${(pMayorIgual5 * 100).toFixed(2)} %</strong>`]]
             );
 
             const ks = Array.from({ length: n + 1 }, (_, i) => i);
@@ -399,19 +601,21 @@
         }
 
         function actualizarInferencia(datos) {
-            const prendas = datos.map(f => numDe(f[columnas.prendas], 10)).filter(Number.isFinite);
+            const v = variablesNumericas(datos);
+            const prendas = v.prendas.filter(Number.isFinite);
             const n = prendas.length, m = media(prendas), s = desv(prendas), se = s / Math.sqrt(n);
 
             const mu0 = parseFloat(document.getElementById("hipMu0").value) || 3;
             const alfa = parseFloat(document.getElementById("hipAlfa").value);
-            const z = (m - mu0) / se;
-            const p = pnormDer(z);
+            const glT = n - 1;
+            const tStat = (m - mu0) / se;
+            const p = pColaDerechaT(tStat, glT);
             const rechaza = p < alfa;
 
             document.getElementById("hipResultado").innerHTML = `
                 <ul class="pasos">
                     <li>Datos: n = ${n}, x̄ = ${m.toFixed(3)}, s = ${s.toFixed(3)}, error estándar = ${se.toFixed(4)}</li>
-                    <li>Estadístico: Z = (x̄ − μ₀) / (s/√n) = <strong>${z.toFixed(3)}</strong></li>
+                    <li>Estadístico: t = (x̄ − μ₀) / (s/√n) = <strong>${tStat.toFixed(3)}</strong> (t de Student, ${glT} g.l.)</li>
                     <li>Valor-p = <strong>${p < 0.001 ? "< 0.001" : p.toFixed(4)}</strong></li>
                 </ul>
                 <div class="resultado ${rechaza ? "rechaza" : ""}">
@@ -420,19 +624,120 @@
                         : `El valor-p no es menor que α = ${alfa}. No se rechaza H₀: no hay evidencia suficiente de que el promedio sea mayor a ${mu0}.`}
                 </div>`;
 
-            const crit = 1.96;
+            // Valor crítico t (cola derecha) según α y los grados de libertad actuales.
+            const tCrit = tInv(1 - alfa, glT);
+            pintarCurvaHipotesis("svgHipotesis", tStat, tCrit, rechaza);
+            document.getElementById("hipGraficoTexto").textContent =
+                `Zona sombreada: región de rechazo para H₁: μ > ${mu0} con α = ${alfa} (t crítico = ${tCrit.toFixed(3)}, ${glT} g.l.). ` +
+                (rechaza
+                    ? `El estadístico calculado (t = ${tStat.toFixed(3)}) cae dentro de la región de rechazo.`
+                    : `El estadístico calculado (t = ${tStat.toFixed(3)}) no cae dentro de la región de rechazo.`);
+
+            const criticosZ = { "90": 1.645, "95": 1.96, "99": 2.576 };
+            const nivel = document.getElementById("icNivel").value || "95";
+            const zCrit = criticosZ[nivel];
+            const critT = tInv(1 - (1 - parseInt(nivel) / 100) / 2, glT);
+
             document.getElementById("icTabla").innerHTML = `
                 <div><span>Media muestral</span><strong>${m.toFixed(3)}</strong></div>
                 <div><span>Error estándar</span><strong>${se.toFixed(4)}</strong></div>
-                <div><span>IC 95 % para μ</span><strong>(${(m - crit * se).toFixed(3)} ; ${(m + crit * se).toFixed(3)})</strong></div>`;
+                <div><span>t crítico (${nivel} %, ${glT} g.l.)</span><strong>${critT.toFixed(4)}</strong></div>
+                <div><span>IC ${nivel} % para μ</span><strong>(${(m - critT * se).toFixed(3)} ; ${(m + critT * se).toFixed(3)})</strong></div>`;
+
+            // IC para la proporción de moda sostenible.
+            const sostenibles = datos.filter(f => normalizar(f[columnas.tipoRopa]).includes("moda sostenible")).length;
+            const pHat = sostenibles / datos.length;
+            const seP = Math.sqrt(pHat * (1 - pHat) / datos.length);
+            const meP = zCrit * seP;
+
+            document.getElementById("icPropTabla").innerHTML = `
+                <div><span>Proporción muestral (p̂)</span><strong>${(pHat * 100).toFixed(2)} %</strong></div>
+                <div><span>Error estándar</span><strong>${seP.toFixed(4)}</strong></div>
+                <div><span>Z crítico (${nivel} %)</span><strong>${zCrit}</strong></div>
+                <div><span>IC ${nivel} % para p</span><strong>(${((pHat - meP) * 100).toFixed(2)} % ; ${((pHat + meP) * 100).toFixed(2)} %)</strong></div>`;
+        }
+
+        function actualizarCorrelacionRegresion(datos) {
+            const v = variablesNumericas(datos);
+
+            // Solo se conservan filas donde TODAS las variables usadas son válidas,
+            // para que correlaciones, regresión simple y múltiple usen la misma base.
+            const filas = [];
+            for (let i = 0; i < datos.length; i++) {
+                const prendas = v.prendas[i], presu = v.presupuesto[i], comprasAnio = v.comprasAnio[i], precio = v.precio[i], marcasFrec = v.marcasFrec[i];
+                if ([prendas, presu, comprasAnio, precio, marcasFrec].every(Number.isFinite)) {
+                    filas.push({ prendas, presu, comprasAnio, precio, marcasFrec });
+                }
+            }
+
+            if (filas.length < 4) {
+                document.getElementById("corrTabla").innerHTML = "<p class='nota'>No hay suficientes datos filtrados para calcular correlaciones y regresiones.</p>";
+                document.getElementById("regSimpleEcuacion").textContent = "";
+                document.getElementById("regSimpleTabla").innerHTML = "";
+                document.getElementById("regMultEcuacion").textContent = "";
+                document.getElementById("regMultTabla").innerHTML = "";
+                document.getElementById("regMultResumen").innerHTML = "";
+                return;
+            }
+
+            const prendas = filas.map(f => f.prendas);
+            const presu = filas.map(f => f.presu);
+            const comprasAnio = filas.map(f => f.comprasAnio);
+            const precio = filas.map(f => f.precio);
+            const marcasFrec = filas.map(f => f.marcasFrec);
+            const n = filas.length;
+
+            // ----- Correlaciones -----
+            const pares = [
+                ["% presupuesto", presu],
+                ["Compras marca/año", comprasAnio],
+                ["Disposición a pagar", precio],
+                ["Marcas frecuentes", marcasFrec]
+            ].map(([nombre, x]) => {
+                const r = pearsonR(prendas, x);
+                const pValor = pValorCorrelacion(r, n);
+                return [nombre, r.toFixed(4), (r * r).toFixed(4), pValor < 0.001 ? "< 0.001" : pValor.toFixed(4)];
+            });
+
+            document.getElementById("corrTabla").innerHTML = tabla(
+                ["Variable X", "r de Pearson", "r²", "Valor-p"],
+                pares
+            );
+
+            // ----- Regresión simple: prendas ~ % presupuesto -----
+            const rs = regresionSimple(presu, prendas);
+            document.getElementById("regSimpleEcuacion").textContent =
+                `ŷ = ${rs.b0.toFixed(4)} ${rs.b1 >= 0 ? "+" : "−"} ${Math.abs(rs.b1).toFixed(4)}·X`;
+            document.getElementById("regSimpleTabla").innerHTML = `
+                <div><span>R²</span><strong>${rs.r2.toFixed(6)} (${(rs.r2 * 100).toFixed(3)} %)</strong></div>
+                <div><span>Valor-p de la pendiente</span><strong>${rs.pValor < 0.001 ? "< 0.001" : rs.pValor.toFixed(4)}</strong></div>
+                <div><span>n</span><strong>${rs.n}</strong></div>`;
+
+            // ----- Regresión múltiple: prendas ~ presupuesto + comprasAnio + marcasFrec + precio -----
+            const X = filas.map(f => [1, f.presu, f.comprasAnio, f.marcasFrec, f.precio]);
+            const rm = regresionMultiple(X, prendas);
+            const nombresVar = ["Intercepto", "% presupuesto", "Compras marca/año", "Marcas frecuentes", "Disposición a pagar"];
+
+            document.getElementById("regMultEcuacion").textContent =
+                `ŷ = ${rm.beta.map((b, i) => i === 0 ? b.toFixed(4) : `${b >= 0 ? "+" : "−"} ${Math.abs(b).toFixed(4)}·X${i}`).join(" ")}`;
+
+            document.getElementById("regMultTabla").innerHTML = tabla(
+                ["Variable", "Coeficiente", "Valor-p"],
+                nombresVar.map((nombre, i) => [nombre, rm.beta[i].toFixed(4), rm.pBeta[i] < 0.001 ? "< 0.001" : rm.pBeta[i].toFixed(4)])
+            );
+
+            document.getElementById("regMultResumen").innerHTML = `
+                <div><span>R²</span><strong>${rm.r2.toFixed(6)} (${(rm.r2 * 100).toFixed(3)} %)</strong></div>
+                <div><span>Valor-p global del modelo (F)</span><strong>${rm.pValor < 0.001 ? "< 0.001" : rm.pValor.toFixed(4)}</strong></div>
+                <div><span>n</span><strong>${rm.n}</strong></div>`;
         }
 
         function actualizarTodo(datos) {
             if (!datos.length) return;
             actualizarDescriptiva(datos);
-            actualizarProbabilidad(datos);
             actualizarDistribuciones(datos);
             actualizarInferencia(datos);
+            actualizarCorrelacionRegresion(datos);
         }
     </script>
 </body>

@@ -12,13 +12,6 @@
         .barra-h-pista { flex: 1; height: 11px; background: #eceff1; border-radius: 6px; overflow: hidden; }
         .barra-h-relleno { height: 100%; border-radius: 6px; transition: width .3s; }
         .barra-h-valor { width: 55px; text-align: right; font-weight: bold; color: #263238; }
-        .controles { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-        .controles label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: #607d8b; font-weight: bold; }
-        .controles select { padding: 9px 12px; border: 1px solid #d0d7dc; border-radius: 7px; background: white; color: #37474f; min-width: 160px; font-size: 13px; }
-        .prob-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-radius: 10px; background: #f5f9ff; margin-bottom: 12px; }
-        .prob-item span { color: #546e7a; font-size: 14px; }
-        .prob-item strong { font-size: 24px; color: #1976d2; }
-        .nota { font-size: 13px; color: #607d8b; line-height: 1.6; margin-top: 12px; }
         .dona-fila { display: flex; align-items: center; gap: 25px; }
         .leyenda { list-style: none; flex: 1; display: flex; flex-direction: column; gap: 12px; }
         .leyenda li { display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: #546e7a; }
@@ -58,7 +51,7 @@
             <header class="encabezado">
                 <div>
                     <h2>Marcas</h2>
-                    <p>Preferencias, probabilidades y distribución por marca.</p>
+                    <p>Preferencias y distribución por marca.</p>
                 </div>
 
                 <div class="filtros">
@@ -97,31 +90,14 @@
 
                 <div class="panel">
                     <div class="titulo-panel">
-                        <h3>Probabilidad</h3>
-                    </div>
-                    <div class="controles">
-                        <label>Selecciona una marca (A)
-                            <select id="selMarcaA"></select>
-                        </label>
-                        <label>Segunda marca (B)
-                            <select id="selMarcaB"></select>
-                        </label>
-                    </div>
-                    <div class="prob-item"><span id="etqProbA">P(A)</span><strong id="probA">0%</strong></div>
-                    <div class="prob-item"><span id="etqProbUnion">P(A o B)</span><strong id="probUnion">0%</strong></div>
-                    <p class="nota">Cada persona tiene una sola marca preferida, así que A y B son mutuamente excluyentes: P(A o B) = P(A) + P(B).</p>
-                </div>
-            </section>
-
-            <section class="paneles">
-                <div class="panel">
-                    <div class="titulo-panel">
                         <h3 id="tituloCarrera">Distribución por carrera</h3>
                         <span id="totalFans"></span>
                     </div>
                     <div class="barras-h" id="barrasCarrera"></div>
                 </div>
+            </section>
 
+            <section class="paneles">
                 <div class="panel">
                     <div class="titulo-panel">
                         <h3 id="tituloGenero">Distribución por género</h3>
@@ -145,35 +121,13 @@
         const MARCAS = ["Adidas", "Puma", "Nike", "Zara", "H&M", "Levi's"];
         const COLORES = ["#4caf50", "#2196f3", "#f44336", "#9c27b0", "#ff9800", "#00bcd4", "#795548"];
         let ultimaLongitud = -1;
-        let listasListas = false;
 
         setInterval(function () {
             if (typeof datosFiltrados === "undefined") return;
-            if (!listasListas && datosFiltrados.length) {
-                poblarSelectMarcas();
-                listasListas = true;
-            }
             if (datosFiltrados.length === ultimaLongitud) return;
             ultimaLongitud = datosFiltrados.length;
             actualizarMarcas(datosFiltrados);
         }, 300);
-
-        function poblarSelectMarcas() {
-            const a = document.getElementById("selMarcaA");
-            const b = document.getElementById("selMarcaB");
-            MARCAS.forEach(m => {
-                const op1 = document.createElement("option");
-                op1.value = m; op1.textContent = m;
-                a.appendChild(op1);
-                const op2 = document.createElement("option");
-                op2.value = m; op2.textContent = m;
-                b.appendChild(op2);
-            });
-            a.value = "Adidas";
-            b.value = "Puma";
-            a.addEventListener("change", () => actualizarMarcas(datosFiltrados));
-            b.addEventListener("change", () => actualizarMarcas(datosFiltrados));
-        }
 
         function pintarBarrasH(idContenedor, items, color) {
             const cont = document.getElementById(idContenedor);
@@ -222,17 +176,9 @@
 
             pintarBarrasH("barrasMarcas", dist, COLORES);
 
-            const A = document.getElementById("selMarcaA").value || "Adidas";
-            const B = document.getElementById("selMarcaB").value || "Puma";
-
-            const pA = calcularPorcentaje(datos, columnas.marcaPreferida, [A]);
-            const pB = calcularPorcentaje(datos, columnas.marcaPreferida, [B]);
-            const pUnion = A === B ? pA : redondear(pA + pB);
-
-            actualizarTexto("etqProbA", `P(${A})`);
-            actualizarTexto("probA", pA + "%");
-            actualizarTexto("etqProbUnion", A === B ? `P(${A})` : `P(${A} o ${B})`);
-            actualizarTexto("probUnion", pUnion + "%");
+            // La marca más preferida (top de la lista) se usa para alimentar
+            // las secciones de distribución por carrera y por género.
+            const A = dist[0].etiqueta;
 
             actualizarTexto("tituloCarrera", `Distribución por carrera (${A})`);
             actualizarTexto("tituloGenero", `Distribución por género (${A})`);
